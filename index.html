@@ -3,9 +3,242 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เว็บของฉัน</title>
+  <title>ชื่อเว็บไซต์</title>
+  <meta name="description" content="คำอธิบายสั้นๆ ของเว็บไซต์">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --bg: #ffffff;
+      --bg-soft: #f3f6fb;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Prompt', sans-serif; color: var(--text); background: var(--bg); line-height: 1.7; }
+    a { text-decoration: none; color: inherit; }
+    .container { width: min(1100px, 92%); margin: 0 auto; }
+
+    /* Header */
+    header { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid var(--border); }
+    nav { display: flex; justify-content: space-between; align-items: center; height: 68px; }
+    .logo { font-weight: 600; font-size: 1.3rem; color: var(--primary); }
+    .menu { display: flex; gap: 28px; list-style: none; }
+    .menu a { color: var(--muted); font-size: 0.95rem; transition: color .2s; }
+    .menu a:hover { color: var(--primary); }
+    .toggle { display: none; background: none; border: 0; font-size: 1.6rem; cursor: pointer; color: var(--text); }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, #eff4ff, #ffffff); padding: 110px 0; }
+    .hero-inner { display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-items: center; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.3; font-weight: 600; }
+    .hero h1 span { color: var(--primary); }
+    .hero p { color: var(--muted); margin: 18px 0 30px; font-size: 1.05rem; max-width: 520px; }
+    .btn { display: inline-block; padding: 12px 28px; border-radius: 10px; font-weight: 500; transition: .2s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-outline { border: 1px solid var(--border); margin-left: 10px; background: #fff; }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .hero-visual {
+      height: 320px; border-radius: 24px;
+      background: linear-gradient(135deg, var(--primary), #60a5fa);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.9); font-size: 1.1rem; box-shadow: 0 20px 50px rgba(37,99,235,.25);
+    }
+
+    /* Sections */
+    section { padding: 90px 0; }
+    section.soft { background: var(--bg-soft); }
+    .head { text-align: center; margin-bottom: 50px; }
+    .head h2 { font-size: 2rem; font-weight: 600; }
+    .head p { color: var(--muted); margin-top: 8px; }
+
+    .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 26px; }
+    .card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 30px; transition: .25s; }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 14px 30px rgba(0,0,0,.08); }
+    .icon {
+      width: 48px; height: 48px; border-radius: 12px; background: #e8efff; color: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-weight: 600; margin-bottom: 16px;
+    }
+    .card h3 { font-size: 1.15rem; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 0.95rem; }
+
+    /* About */
+    .about { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+    .about-img { height: 300px; border-radius: 20px; background: linear-gradient(135deg, #dbe7ff, #bcd2ff); }
+    .about p { color: var(--muted); margin: 14px 0; }
+    .stats { display: flex; gap: 36px; margin-top: 24px; }
+    .stats b { display: block; font-size: 1.8rem; color: var(--primary); }
+    .stats span { color: var(--muted); font-size: 0.9rem; }
+
+    /* Contact */
+    .contact { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; }
+    .info p { color: var(--muted); margin: 10px 0; }
+    .info b { color: var(--text); display: block; font-weight: 500; }
+    form { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 30px; display: grid; gap: 14px; }
+    input, textarea {
+      font-family: inherit; font-size: 0.95rem; padding: 12px 14px;
+      border: 1px solid var(--border); border-radius: 10px; width: 100%; outline: none;
+    }
+    input:focus, textarea:focus { border-color: var(--primary); }
+    textarea { min-height: 120px; resize: vertical; }
+    button.btn { border: 0; cursor: pointer; font-family: inherit; font-size: 1rem; }
+    #msg { color: #16a34a; font-size: 0.9rem; display: none; }
+
+    footer { background: #111827; color: #9ca3af; text-align: center; padding: 28px 0; font-size: 0.9rem; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s, transform .6s; }
+    .reveal.show { opacity: 1; transform: none; }
+
+    @media (max-width: 800px) {
+      .hero-inner, .about, .contact { grid-template-columns: 1fr; }
+      .hero { padding: 70px 0; }
+      .hero-visual { height: 220px; }
+      .toggle { display: block; }
+      .menu {
+        display: none; position: absolute; top: 68px; left: 0; right: 0;
+        flex-direction: column; gap: 0; background: #fff; border-bottom: 1px solid var(--border);
+      }
+      .menu.open { display: flex; }
+      .menu li a { display: block; padding: 14px 4%; }
+      .btn-outline { margin: 10px 0 0 0; }
+    }
+  </style>
 </head>
 <body>
-  <h1>สวัสดี เว็บแรกของฉัน</h1>
+
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#home" class="logo">ชื่อเว็บไซต์</a>
+        <button class="toggle" id="toggle" aria-label="เมนู">&#9776;</button>
+        <ul class="menu" id="menu">
+          <li><a href="#home">หน้าแรก</a></li>
+          <li><a href="#services">บริการ</a></li>
+          <li><a href="#about">เกี่ยวกับเรา</a></li>
+          <li><a href="#contact">ติดต่อ</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-inner">
+        <div>
+          <h1>ยินดีต้อนรับสู่<br><span>เว็บไซต์ของเรา</span></h1>
+          <p>ใส่ข้อความแนะนำสั้นๆ ว่าเว็บนี้เกี่ยวกับอะไร ใครคือกลุ่มเป้าหมาย และผู้เข้าชมจะได้อะไรจากเว็บนี้</p>
+          <a href="#services" class="btn btn-primary">ดูบริการ</a>
+          <a href="#contact" class="btn btn-outline">ติดต่อเรา</a>
+        </div>
+        <div class="hero-visual">พื้นที่ใส่รูปภาพ</div>
+      </div>
+    </section>
+
+    <section id="services" class="soft">
+      <div class="container reveal">
+        <div class="head">
+          <h2>บริการของเรา</h2>
+          <p>สิ่งที่เรามอบให้คุณ</p>
+        </div>
+        <div class="grid3">
+          <div class="card">
+            <div class="icon">1</div>
+            <h3>บริการที่หนึ่ง</h3>
+            <p>อธิบายรายละเอียดของบริการหรือสินค้าชิ้นแรกที่นี่ ให้กระชับและเข้าใจง่าย</p>
+          </div>
+          <div class="card">
+            <div class="icon">2</div>
+            <h3>บริการที่สอง</h3>
+            <p>อธิบายรายละเอียดของบริการหรือสินค้าชิ้นที่สองที่นี่ ให้กระชับและเข้าใจง่าย</p>
+          </div>
+          <div class="card">
+            <div class="icon">3</div>
+            <h3>บริการที่สาม</h3>
+            <p>อธิบายรายละเอียดของบริการหรือสินค้าชิ้นที่สามที่นี่ ให้กระชับและเข้าใจง่าย</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container about reveal">
+        <div class="about-img"></div>
+        <div>
+          <h2 style="font-size:2rem;font-weight:600;">เกี่ยวกับเรา</h2>
+          <p>เล่าเรื่องราวที่มาของเว็บไซต์หรือทีมงาน เป้าหมาย และสิ่งที่คุณให้ความสำคัญ</p>
+          <p>เพิ่มย่อหน้าที่สองได้ตามต้องการ เพื่ออธิบายจุดเด่นหรือความแตกต่างของคุณ</p>
+          <div class="stats">
+            <div><b>100+</b><span>ผู้ใช้งาน</span></div>
+            <div><b>10+</b><span>โปรเจกต์</span></div>
+            <div><b>24/7</b><span>พร้อมให้บริการ</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="soft">
+      <div class="container reveal">
+        <div class="head">
+          <h2>ติดต่อเรา</h2>
+          <p>มีคำถามหรืออยากพูดคุย ส่งข้อความมาได้เลย</p>
+        </div>
+        <div class="contact">
+          <div class="info">
+            <p><b>อีเมล</b>your-email@example.com</p>
+            <p><b>โทรศัพท์</b>0X-XXXX-XXXX</p>
+            <p><b>ที่อยู่</b>ประเทศไทย</p>
+          </div>
+          <form id="form">
+            <input type="text" placeholder="ชื่อ" required>
+            <input type="email" placeholder="อีเมล" required>
+            <textarea placeholder="ข้อความ" required></textarea>
+            <button type="submit" class="btn btn-primary">ส่งข้อความ</button>
+            <p id="msg">ขอบคุณครับ ได้รับข้อความของคุณแล้ว</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">&copy; <span id="year"></span> ชื่อเว็บไซต์ สงวนลิขสิทธิ์</div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // เมนูมือถือ
+    var menu = document.getElementById('menu');
+    document.getElementById('toggle').addEventListener('click', function () { menu.classList.toggle('open'); });
+    menu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () { menu.classList.remove('open'); });
+    });
+
+    // ฟอร์ม (แสดงข้อความเฉยๆ ยังไม่ส่งข้อมูลจริง)
+    document.getElementById('form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      document.getElementById('msg').style.display = 'block';
+      this.reset();
+    });
+
+    // เอฟเฟกต์ตอนเลื่อนหน้า
+    var items = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add('show'); io.unobserve(en.target); }
+        });
+      }, { threshold: 0.12 });
+      items.forEach(function (el) { io.observe(el); });
+    } else {
+      items.forEach(function (el) { el.classList.add('show'); });
+    }
+  </script>
 </body>
 </html>
