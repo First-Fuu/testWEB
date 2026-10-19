@@ -1,244 +1,1024 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ชื่อเว็บไซต์</title>
-  <meta name="description" content="คำอธิบายสั้นๆ ของเว็บไซต์">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --bg: #ffffff;
-      --bg-soft: #f3f6fb;
-      --border: #e5e7eb;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Prompt', sans-serif; color: var(--text); background: var(--bg); line-height: 1.7; }
-    a { text-decoration: none; color: inherit; }
-    .container { width: min(1100px, 92%); margin: 0 auto; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบบันทึกและติดตามการฝึกงาน</title>
+    <!-- ฟอนต์ Noto Sans Thai สไตล์งานจริง เรียบร้อย อ่านง่าย เป็นทางการ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* โทนสียอดนิยมในระบบเว็บแอป/Dashboard จริง (Tailwind Slate / Slate Navy) */
+            --primary: #1e40af;       /* น้ำเงินมาตรฐาน ทรงงานการศึกษา/องค์กร */
+            --primary-hover: #1d4ed8;
+            --primary-subtle: #eff6ff;
+            --border-primary: #bfdbfe;
 
-    /* Header */
-    header { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid var(--border); }
-    nav { display: flex; justify-content: space-between; align-items: center; height: 68px; }
-    .logo { font-weight: 600; font-size: 1.3rem; color: var(--primary); }
-    .menu { display: flex; gap: 28px; list-style: none; }
-    .menu a { color: var(--muted); font-size: 0.95rem; transition: color .2s; }
-    .menu a:hover { color: var(--primary); }
-    .toggle { display: none; background: none; border: 0; font-size: 1.6rem; cursor: pointer; color: var(--text); }
+            --bg: #f8fafc;            /* พื้นหลังสีเทาขาวสะอาดตา ไม่ลอย */
+            --surface: #ffffff;       /* พื้นหลังการ์ดสีขาวแท้ คมชัด */
+            --border: #e2e8f0;        /* เส้นขอบบางแบบเว็บทั่วไป */
+            --border-subtle: #f1f5f9;
 
-    /* Hero */
-    .hero { background: linear-gradient(135deg, #eff4ff, #ffffff); padding: 110px 0; }
-    .hero-inner { display: grid; grid-template-columns: 1.2fr 1fr; gap: 50px; align-items: center; }
-    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.3; font-weight: 600; }
-    .hero h1 span { color: var(--primary); }
-    .hero p { color: var(--muted); margin: 18px 0 30px; font-size: 1.05rem; max-width: 520px; }
-    .btn { display: inline-block; padding: 12px 28px; border-radius: 10px; font-weight: 500; transition: .2s; }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
-    .btn-outline { border: 1px solid var(--border); margin-left: 10px; background: #fff; }
-    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-    .hero-visual {
-      height: 320px; border-radius: 24px;
-      background: linear-gradient(135deg, var(--primary), #60a5fa);
-      display: flex; align-items: center; justify-content: center;
-      color: rgba(255,255,255,.9); font-size: 1.1rem; box-shadow: 0 20px 50px rgba(37,99,235,.25);
-    }
+            --text-900: #0f172a;      /* ตัวหนังสือหลัก ดำอมเทา อ่านสบายตา ไม่ดำทึบ */
+            --text-600: #475569;      /* ข้อความรอง */
+            --text-400: #94a3b8;      /* ตัวอักษรช่วยระบุ/placeholder */
 
-    /* Sections */
-    section { padding: 90px 0; }
-    section.soft { background: var(--bg-soft); }
-    .head { text-align: center; margin-bottom: 50px; }
-    .head h2 { font-size: 2rem; font-weight: 600; }
-    .head p { color: var(--muted); margin-top: 8px; }
+            --status-yellow-bg: #fef9c3;
+            --status-yellow-text: #854d0e;
+            --status-green-bg: #dcfce7;
+            --status-green-text: #166534;
+            --status-red-bg: #fee2e2;
+            --status-red-text: #991b1b;
+        }
 
-    .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 26px; }
-    .card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 30px; transition: .25s; }
-    .card:hover { transform: translateY(-6px); box-shadow: 0 14px 30px rgba(0,0,0,.08); }
-    .icon {
-      width: 48px; height: 48px; border-radius: 12px; background: #e8efff; color: var(--primary);
-      display: flex; align-items: center; justify-content: center; font-weight: 600; margin-bottom: 16px;
-    }
-    .card h3 { font-size: 1.15rem; margin-bottom: 8px; }
-    .card p { color: var(--muted); font-size: 0.95rem; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
 
-    /* About */
-    .about { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
-    .about-img { height: 300px; border-radius: 20px; background: linear-gradient(135deg, #dbe7ff, #bcd2ff); }
-    .about p { color: var(--muted); margin: 14px 0; }
-    .stats { display: flex; gap: 36px; margin-top: 24px; }
-    .stats b { display: block; font-size: 1.8rem; color: var(--primary); }
-    .stats span { color: var(--muted); font-size: 0.9rem; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-900);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
 
-    /* Contact */
-    .contact { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; }
-    .info p { color: var(--muted); margin: 10px 0; }
-    .info b { color: var(--text); display: block; font-weight: 500; }
-    form { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 30px; display: grid; gap: 14px; }
-    input, textarea {
-      font-family: inherit; font-size: 0.95rem; padding: 12px 14px;
-      border: 1px solid var(--border); border-radius: 10px; width: 100%; outline: none;
-    }
-    input:focus, textarea:focus { border-color: var(--primary); }
-    textarea { min-height: 120px; resize: vertical; }
-    button.btn { border: 0; cursor: pointer; font-family: inherit; font-size: 1rem; }
-    #msg { color: #16a34a; font-size: 0.9rem; display: none; }
+        /* Navbar ด้านบน แบบ Web Application ทั่วไป (เช่น GitHub / Jira / มหาวิทยาลัย) */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
 
-    footer { background: #111827; color: #9ca3af; text-align: center; padding: 28px 0; font-size: 0.9rem; }
+        .navbar {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s, transform .6s; }
-    .reveal.show { opacity: 1; transform: none; }
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-900);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
 
-    @media (max-width: 800px) {
-      .hero-inner, .about, .contact { grid-template-columns: 1fr; }
-      .hero { padding: 70px 0; }
-      .hero-visual { height: 220px; }
-      .toggle { display: block; }
-      .menu {
-        display: none; position: absolute; top: 68px; left: 0; right: 0;
-        flex-direction: column; gap: 0; background: #fff; border-bottom: 1px solid var(--border);
-      }
-      .menu.open { display: flex; }
-      .menu li a { display: block; padding: 14px 4%; }
-      .btn-outline { margin: 10px 0 0 0; }
-    }
-  </style>
+        .brand-badge {
+            background: var(--primary);
+            color: #fff;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-600);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-900);
+            background: #f1f5f9;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            background: var(--primary-subtle);
+            font-weight: 600;
+        }
+
+        /* Layout โครงสร้าง */
+        .container {
+            max-width: 1140px;
+            margin: 24px auto 48px;
+            padding: 0 24px;
+        }
+
+        .page-header {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-900);
+        }
+
+        .page-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-600);
+            margin-top: 2px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 310px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 860px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* กล่องเนื้อหา (Card ทรงคนทำจริง ไม่ใส่เงาฟุ้งแบบ AI) */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-900);
+        }
+
+        /* โปรไฟล์นักศึกษาฝั่งซ้าย */
+        .profile-card {
+            text-align: center;
+            padding: 24px 20px;
+        }
+
+        .avatar-circle {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #334155;
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .student-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-900);
+        }
+
+        .student-id {
+            font-size: 0.82rem;
+            color: var(--text-600);
+            margin-top: 2px;
+        }
+
+        .meta-list {
+            text-align: left;
+            margin-top: 18px;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 14px;
+        }
+
+        .meta-item {
+            margin-bottom: 10px;
+        }
+
+        .meta-label {
+            font-size: 0.78rem;
+            color: var(--text-400);
+            font-weight: 500;
+        }
+
+        .meta-value {
+            font-size: 0.88rem;
+            color: var(--text-900);
+            font-weight: 500;
+        }
+
+        /* ป้ายสถานะ */
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .status-badge.pending {
+            background: var(--status-yellow-bg);
+            color: var(--status-yellow-text);
+        }
+
+        .status-badge.passed {
+            background: var(--status-green-bg);
+            color: var(--status-green-text);
+        }
+
+        .status-badge.failed {
+            background: var(--status-red-bg);
+            color: var(--status-red-text);
+        }
+
+        /* สรุปตัวเลขสถิติ */
+        .stat-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .stat-item {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-lbl {
+            font-size: 0.75rem;
+            color: var(--text-600);
+        }
+
+        /* Form Controls สะอาดตาเหมือน Bootstrap / Tailwind ทั่วไป */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-900);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--text-900);
+            background: #fff;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-400);
+        }
+
+        textarea.form-control {
+            min-height: 85px;
+            resize: vertical;
+        }
+
+        .form-hint {
+            font-size: 0.76rem;
+            color: var(--text-400);
+            margin-top: 4px;
+        }
+
+        /* Buttons แบบแบน เรียบร้อย */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 18px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .btn-danger-outline {
+            background: transparent;
+            color: #dc2626;
+            border-color: #fca5a5;
+            padding: 4px 10px;
+            font-size: 0.78rem;
+        }
+
+        .btn-danger-outline:hover {
+            background: #fef2f2;
+            border-color: #dc2626;
+        }
+
+        /* พรีวิวรูปภาพ */
+        .preview-container {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .preview-container img {
+            max-width: 220px;
+            max-height: 140px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            object-fit: cover;
+            display: block;
+        }
+
+        /* รายการประวัติแบบตาราง/การ์ดย่อยคลีนๆ */
+        .log-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .log-entry {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .log-photo {
+            width: 64px;
+            height: 64px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            flex-shrink: 0;
+        }
+
+        .log-body {
+            flex-grow: 1;
+        }
+
+        .log-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--text-600);
+            margin-bottom: 4px;
+        }
+
+        .log-header-info strong {
+            color: var(--text-900);
+        }
+
+        .log-text {
+            font-size: 0.88rem;
+            color: var(--text-900);
+            white-space: pre-line;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 28px;
+            color: var(--text-400);
+            font-size: 0.85rem;
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+        }
+
+        /* Toast แบบเรียบง่ายมุมขวา */
+        .alert-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .alert-toast.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Dark cyberpunk theme: restrained neon accents, readable Thai text */
+        :root {
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --primary-subtle: rgba(56, 189, 248, 0.12);
+            --border-primary: rgba(56, 189, 248, 0.35);
+            --bg: #080d18;
+            --surface: #101827;
+            --border: #263449;
+            --border-subtle: #1b293b;
+            --text-900: #e5edf7;
+            --text-600: #9aabc0;
+            --text-400: #72839a;
+            --status-yellow-bg: rgba(245, 158, 11, 0.14);
+            --status-yellow-text: #fbbf24;
+            --status-green-bg: rgba(16, 185, 129, 0.14);
+            --status-green-text: #34d399;
+            --status-red-bg: rgba(244, 63, 94, 0.14);
+            --status-red-text: #fb7185;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 10% 0%, rgba(14, 165, 233, 0.12), transparent 34%),
+                radial-gradient(ellipse at 95% 35%, rgba(124, 58, 237, 0.09), transparent 32%),
+                linear-gradient(rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+            background-size: auto, auto, 32px 32px, 32px 32px;
+            background-attachment: fixed;
+            color: var(--text-900);
+        }
+
+        header {
+            background: rgba(8, 13, 24, 0.92);
+            border-bottom-color: #263449;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand-logo { color: var(--text-900); }
+        .brand-badge {
+            background: linear-gradient(135deg, #0891b2, #2563eb);
+            border-radius: 5px;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.2);
+        }
+        .nav-links a:hover {
+            color: #e0f2fe;
+            background: rgba(56, 189, 248, 0.08);
+        }
+        .nav-links a.active {
+            color: #7dd3fc;
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .page-header { border-bottom-color: var(--border); }
+        .page-title { color: #f1f5f9; }
+        .card {
+            background: linear-gradient(145deg, rgba(16, 24, 39, 0.98), rgba(13, 21, 35, 0.98));
+            border-color: var(--border);
+            border-radius: 10px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2), inset 0 1px rgba(125, 211, 252, 0.04);
+        }
+        .card-header { border-bottom-color: var(--border-subtle); }
+        .card-title { color: #eaf2fb; }
+        .avatar-circle {
+            background: #15283c;
+            color: #7dd3fc;
+            border-color: #263d55;
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.06);
+        }
+        .student-name { color: #f1f5f9; }
+        .meta-list, .stat-bar { border-color: var(--border-subtle); }
+        .meta-label { color: #8294aa; }
+        .stat-item {
+            background: #0b1422;
+            border-color: #263449;
+        }
+        .stat-val { color: #67e8f9; }
+        .form-group label { color: #cbd5e1; }
+        .form-control {
+            color: #e5edf7;
+            background: #0a1220;
+            border-color: #334155;
+            color-scheme: dark;
+        }
+        .form-control:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.13);
+        }
+        .form-control::placeholder { color: #64748b; }
+        .form-hint { color: #8294aa; }
+        .btn-primary {
+            background: linear-gradient(110deg, #0891b2, #2563eb);
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(110deg, #06b6d4, #3b82f6);
+            box-shadow: 0 5px 18px rgba(14, 165, 233, 0.3);
+        }
+        .btn-success { background: #059669; }
+        .btn-success:hover { background: #10b981; }
+        .btn-danger-outline {
+            color: #fda4af;
+            border-color: rgba(244, 63, 94, 0.35);
+        }
+        .btn-danger-outline:hover {
+            background: rgba(244, 63, 94, 0.14);
+            border-color: #fb7185;
+        }
+        .preview-container img, .log-photo {
+            border-color: #334155;
+            background: #0b1422;
+        }
+        .log-entry {
+            background: #0b1422;
+            border-color: #263449;
+        }
+        .log-entry:hover {
+            border-color: rgba(56, 189, 248, 0.45);
+        }
+        .log-header-info, .log-header-info strong { color: #9aabc0; }
+        .log-text { color: #e2e8f0; }
+        .no-data {
+            color: #8294aa;
+            border-color: #334155;
+        }
+        .alert-toast {
+            background: #101827;
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 18px rgba(56, 189, 248, 0.12);
+        }
+
+        @media (max-width: 600px) {
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .log-entry { flex-wrap: wrap; }
+            .log-header-info {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 2px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <header>
+    <!-- Header / Navbar แถบนำทางมาตรฐาน -->
+    <header>
+        <div class="navbar">
+            <a href="#" class="brand-logo">
+                <span class="brand-badge">STD INTERNSHIP</span>
+                <span>ระบบติดตามการฝึกงาน</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#daily-form" class="active">ลงบันทึกงาน</a></li>
+                <li><a href="#history-section">ประวัติบันทึก</a></li>
+                <li><a href="#weekly-section">รายงานสัปดาห์</a></li>
+                <li><a href="#eval-section">อาจารย์ประเมิน</a></li>
+            </ul>
+        </div>
+    </header>
+
     <div class="container">
-      <nav>
-        <a href="#home" class="logo">ชื่อเว็บไซต์</a>
-        <button class="toggle" id="toggle" aria-label="เมนู">&#9776;</button>
-        <ul class="menu" id="menu">
-          <li><a href="#home">หน้าแรก</a></li>
-          <li><a href="#services">บริการ</a></li>
-          <li><a href="#about">เกี่ยวกับเรา</a></li>
-          <li><a href="#contact">ติดต่อ</a></li>
-        </ul>
-      </nav>
+
+        <!-- ส่วนหัวหน้าเว็บ -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">แบบบันทึกการฝึกประสบการณ์วิชาชีพ</h1>
+                <p class="page-subtitle">ภาคเรียนที่ 2 ปีการศึกษา 2569 &bull; แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล</p>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-600);">
+                สถานะระบบ: <span style="color: #16a34a; font-weight: 600;">● ปกติ (Online)</span>
+            </div>
+        </div>
+
+        <div class="main-layout">
+
+            <aside>
+                <div class="card profile-card" style="position: sticky; top: 80px;">
+                    <div class="avatar-circle">สช</div>
+                    <h2 class="student-name">นายปีโป้ 5 โรบัค</h2>
+                    <p class="student-id">รหัสนักศึกษา: 6721910000</p>
+
+                    <div class="meta-list">
+                        <div class="meta-item">
+                            <div class="meta-label">ระดับชั้น / สาขาวิชา</div>
+                            <div class="meta-value">ปวช. 3 เทคโนโลยีธุรกิจดิจิทัล (DBT-67)</div>
+                        </div>
+
+                        <div class="meta-item">
+                            <div class="meta-label">สถานศึกษา</div>
+                            <div class="meta-value">วิทยาลัยพณิชยการเชตุพน</div>
+                        </div>
+
+                        <div class="meta-item">
+                            <div class="meta-label">สถานที่ฝึกงาน</div>
+                            <div class="meta-value">ไม่บอก.</div>
+                        </div>
+
+                        <div class="meta-item">
+                            <div class="meta-label">เบอร์โทรศัพท์</div>
+                            <div class="meta-value">000-000-0000</div>
+                        </div>
+
+                        <div class="meta-item" style="margin-top: 14px;">
+                            <div class="meta-label">สถานะการฝึกงาน</div>
+                            <div>
+                                <span id="student-status-badge" class="status-badge pending">กำลังฝึกงาน</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- สรุปตัวเลขงานที่ส่งแล้ว -->
+                    <div class="stat-bar">
+                        <div class="stat-item">
+                            <div class="stat-val" id="total-days-count">0</div>
+                            <div class="stat-lbl">บันทึกประจำวัน</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-val" id="total-reports-count">0</div>
+                            <div class="stat-lbl">รายงานสัปดาห์</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ฝั่งเนื้อหาหลักและฟอร์ม (Main) -->
+            <main>
+
+                <!-- ฟอร์มบันทึกประจำวัน -->
+                <section id="daily-form" class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">บันทึกการปฏิบัติงานประจำวัน</h2>
+                        <span style="font-size: 0.8rem; color: var(--text-400);">Daily Log</span>
+                    </div>
+
+                    <form id="daily-log-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="log-date">วันที่ปฏิบัติงาน <span style="color: #dc2626;">*</span></label>
+                                <input type="date" id="log-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="log-location">แผนก / สถานที่ปฏิบัติงาน <span style="color: #dc2626;">*</span></label>
+                                <input type="text" id="log-location" class="form-control" placeholder="ระบุที่ฝึกงานด้วย อย่าบิด" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="log-image">รูปภาพการทำงาน (ถ้ามี)</label>
+                            <input type="file" id="log-image" class="form-control" accept="image/*">
+                            <div class="form-hint">รองรับไฟล์ JPG, PNG</div>
+                            <div class="preview-container" id="preview-box">
+                                <img id="image-preview" alt="รูปตัวอย่าง">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="log-detail">รายละเอียดงานที่ปฏิบัติในวันนี้ <span style="color: #dc2626;">*</span></label>
+                            <textarea id="log-detail" class="form-control" placeholder="ทำอะไรพิมลงมาด้วยไม่ใช่พิม - แล้วบิดไม่ตอบ" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
+                    </form>
+                </section>
+
+                <!-- รายการประวัติบันทึก -->
+                <section id="history-section" class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">ประวัติการบันทึกงานย้อนหลัง</h2>
+                    </div>
+                    <div id="log-list-container" class="log-container">
+                        <!-- รายการจะแสดงจาก LocalStorage -->
+                    </div>
+                </section>
+
+                <!-- ส่งรายงานสัปดาห์ -->
+                <section id="weekly-section" class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">ส่งรายงานสรุปประจำสัปดาห์</h2>
+                        <span style="font-size: 0.8rem; color: var(--text-400);">Weekly Report</span>
+                    </div>
+
+                    <form id="weekly-report-form">
+                        <div class="form-group">
+                            <label for="weekly-select">ประจำสัปดาห์ที่ <span style="color: #dc2626;">*</span></label>
+                            <select id="weekly-select" class="form-control">
+                                <option value="1">สัปดาห์ที่ 1</option>
+                                <option value="2">สัปดาห์ที่ 2</option>
+                                <option value="3">สัปดาห์ที่ 3</option>
+                                <option value="4">สัปดาห์ที่ 4</option>
+                                <option value="5">สัปดาห์ที่ 5</option>
+                                <option value="6">สัปดาห์ที่ 6</option>
+                                <option value="7">สัปดาห์ที่ 7</option>
+                                <option value="8">สัปดาห์ที่ 8</option>
+                                <option value="9">สัปดาห์ที่ 9</option>
+                                <option value="10">สัปดาห์ที่ 10</option>
+                                <option value="11">สัปดาห์ที่ 11</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weekly-summary">สรุปผลการทำงานและความรู้ที่ได้รับ <span style="color: #dc2626;">*</span></label>
+                            <textarea id="weekly-summary" class="form-control" placeholder="สรุปภาพรวมงาน ปัญหาที่พบในสัปดาห์นี้..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weekly-file">แนบไฟล์เอกสารรายงาน (PDF / Word)</label>
+                            <input type="file" id="weekly-file" class="form-control" accept=".pdf,.doc,.docx">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">ส่งรายงานประจำสัปดาห์</button>
+                    </form>
+                </section>
+
+                <!-- คืองี้อันนี้ของอาจารย์เท่านั้น เด็กนักเรียนห้ามทำเดะจับลบประวัติฝึกงาน -->
+                <section id="eval-section" class="card" style="border-left: 4px solid var(--primary);">
+                    <div class="card-header">
+                        <h2 class="card-title">สำหรับอาจารย์นิเทศก์ / ผู้ดูแลการฝึกงาน</h2>
+                    </div>
+
+                    <form id="evaluation-form">
+                        <div class="form-group">
+                            <label for="eval-comment">ความเห็นและข้อเสนอแนะในการปฏิบัติงาน</label>
+                            <textarea id="eval-comment" class="form-control" placeholder="ใส่ข้อคิดเห็น หรือบันทึกการนิเทศงาน..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eval-status">ผลการประเมินการฝึกงาน</label>
+                            <select id="eval-status" class="form-control">
+                                <option value="pending">กำลังฝึกงาน (รอประเมิน)</option>
+                                <option value="passed">ผ่านการฝึกงาน</option>
+                                <option value="failed">ไม่ผ่านการฝึกงาน</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">บันทึกผลการประเมิน</button>
+                    </form>
+                </section>
+
+            </main>
+
+        </div>
     </div>
-  </header>
 
-  <main>
-    <section class="hero" id="home">
-      <div class="container hero-inner">
-        <div>
-          <h1>ยินดีต้อนรับสู่<br><span>เว็บไซต์ของเรา</span></h1>
-          <p>ใส่ข้อความแนะนำสั้นๆ ว่าเว็บนี้เกี่ยวกับอะไร ใครคือกลุ่มเป้าหมาย และผู้เข้าชมจะได้อะไรจากเว็บนี้</p>
-          <a href="#services" class="btn btn-primary">ดูบริการ</a>
-          <a href="#contact" class="btn btn-outline">ติดต่อเรา</a>
-        </div>
-        <div class="hero-visual">พื้นที่ใส่รูปภาพ</div>
-      </div>
-    </section>
+    <!-- กล่องแจ้งเตือนสำหรับใครที่มาแก้ไขต่อไม่ใช่แก้มั่วเดียวโค้ดระเบิด -->
+    <div id="toast" class="alert-toast">บันทึกข้อมูลเรียบร้อยแล้ว</div>
 
-    <section id="services" class="soft">
-      <div class="container reveal">
-        <div class="head">
-          <h2>บริการของเรา</h2>
-          <p>สิ่งที่เรามอบให้คุณ</p>
-        </div>
-        <div class="grid3">
-          <div class="card">
-            <div class="icon">1</div>
-            <h3>บริการที่หนึ่ง</h3>
-            <p>อธิบายรายละเอียดของบริการหรือสินค้าชิ้นแรกที่นี่ ให้กระชับและเข้าใจง่าย</p>
-          </div>
-          <div class="card">
-            <div class="icon">2</div>
-            <h3>บริการที่สอง</h3>
-            <p>อธิบายรายละเอียดของบริการหรือสินค้าชิ้นที่สองที่นี่ ให้กระชับและเข้าใจง่าย</p>
-          </div>
-          <div class="card">
-            <div class="icon">3</div>
-            <h3>บริการที่สาม</h3>
-            <p>อธิบายรายละเอียดของบริการหรือสินค้าชิ้นที่สามที่นี่ ให้กระชับและเข้าใจง่าย</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <script>
+        // ใส่วันที่ปัจจุบันอัตโนมัติ
+        document.getElementById('log-date').valueAsDate = new Date();
 
-    <section id="about">
-      <div class="container about reveal">
-        <div class="about-img"></div>
-        <div>
-          <h2 style="font-size:2rem;font-weight:600;">เกี่ยวกับเรา</h2>
-          <p>เล่าเรื่องราวที่มาของเว็บไซต์หรือทีมงาน เป้าหมาย และสิ่งที่คุณให้ความสำคัญ</p>
-          <p>เพิ่มย่อหน้าที่สองได้ตามต้องการ เพื่ออธิบายจุดเด่นหรือความแตกต่างของคุณ</p>
-          <div class="stats">
-            <div><b>100+</b><span>ผู้ใช้งาน</span></div>
-            <div><b>10+</b><span>โปรเจกต์</span></div>
-            <div><b>24/7</b><span>พร้อมให้บริการ</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
+        let currentImageBase64 = '';
 
-    <section id="contact" class="soft">
-      <div class="container reveal">
-        <div class="head">
-          <h2>ติดต่อเรา</h2>
-          <p>มีคำถามหรืออยากพูดคุย ส่งข้อความมาได้เลย</p>
-        </div>
-        <div class="contact">
-          <div class="info">
-            <p><b>อีเมล</b>your-email@example.com</p>
-            <p><b>โทรศัพท์</b>0X-XXXX-XXXX</p>
-            <p><b>ที่อยู่</b>ประเทศไทย</p>
-          </div>
-          <form id="form">
-            <input type="text" placeholder="ชื่อ" required>
-            <input type="email" placeholder="อีเมล" required>
-            <textarea placeholder="ข้อความ" required></textarea>
-            <button type="submit" class="btn btn-primary">ส่งข้อความ</button>
-            <p id="msg">ขอบคุณครับ ได้รับข้อความของคุณแล้ว</p>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
+        // จัดการรูปภาพ Preview
+        const imageInput = document.getElementById('log-image');
+        const previewBox = document.getElementById('preview-box');
+        const imagePreview = document.getElementById('image-preview');
 
-  <footer>
-    <div class="container">&copy; <span id="year"></span> ชื่อเว็บไซต์ สงวนลิขสิทธิ์</div>
-  </footer>
-
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // เมนูมือถือ
-    var menu = document.getElementById('menu');
-    document.getElementById('toggle').addEventListener('click', function () { menu.classList.toggle('open'); });
-    menu.querySelectorAll('a').forEach(function (a) {
-      a.addEventListener('click', function () { menu.classList.remove('open'); });
-    });
-
-    // ฟอร์ม (แสดงข้อความเฉยๆ ยังไม่ส่งข้อมูลจริง)
-    document.getElementById('form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      document.getElementById('msg').style.display = 'block';
-      this.reset();
-    });
-
-    // เอฟเฟกต์ตอนเลื่อนหน้า
-    var items = document.querySelectorAll('.reveal');
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (en.isIntersecting) { en.target.classList.add('show'); io.unobserve(en.target); }
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentImageBase64 = event.target.result;
+                    imagePreview.src = currentImageBase64;
+                    previewBox.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                currentImageBase64 = '';
+                previewBox.style.display = 'none';
+            }
         });
-      }, { threshold: 0.12 });
-      items.forEach(function (el) { io.observe(el); });
-    } else {
-      items.forEach(function (el) { el.classList.add('show'); });
-    }
-  </script>
+
+        // Toast แจ้งเตือน
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 2500);
+        }
+
+        // บันทึก Daily Log
+        const dailyLogForm = document.getElementById('daily-log-form');
+        dailyLogForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const date = document.getElementById('log-date').value;
+            const location = document.getElementById('log-location').value;
+            const detail = document.getElementById('log-detail').value;
+
+            const newLog = {
+                id: Date.now(),
+                date: date,
+                location: location,
+                detail: detail,
+                image: currentImageBase64
+            };
+
+            const savedLogs = JSON.parse(localStorage.getItem('intern_daily_logs') || '[]');
+            savedLogs.unshift(newLog);
+            localStorage.setItem('intern_daily_logs', JSON.stringify(savedLogs));
+
+            dailyLogForm.reset();
+            document.getElementById('log-date').valueAsDate = new Date();
+            currentImageBase64 = '';
+            previewBox.style.display = 'none';
+
+            renderLogs();
+            showToast('บันทึกข้อมูลประจำวันเรียบร้อยแล้ว');
+        });
+
+        // ลบรายการ
+        function deleteLog(id) {
+            if (confirm('คุณต้องการลบรายการบันทึกนี้หรือไม่?')) {
+                let savedLogs = JSON.parse(localStorage.getItem('intern_daily_logs') || '[]');
+                savedLogs = savedLogs.filter(log => log.id !== id);
+                localStorage.setItem('intern_daily_logs', JSON.stringify(savedLogs));
+                renderLogs();
+                showToast('ลบรายการเรียบร้อยแล้ว');
+            }
+        }
+
+        // แสดงรายการประวัติ
+        function renderLogs() {
+            const container = document.getElementById('log-list-container');
+            const totalDaysSpan = document.getElementById('total-days-count');
+            const savedLogs = JSON.parse(localStorage.getItem('intern_daily_logs') || '[]');
+
+            totalDaysSpan.textContent = savedLogs.length;
+
+            if (savedLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        ยังไม่มีประวัติการบันทึกงาน กรอกแบบฟอร์มด้านบนเพื่อเริ่มบันทึก
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = savedLogs.map(log => `
+                <div class="log-entry">
+                    ${log.image ? `<img src="${log.image}" class="log-photo" alt="ภาพการทำงาน">` : `<div class="log-photo" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:0.75rem;">ไม่มีรูป</div>`}
+                    <div class="log-body">
+                        <div class="log-header-info">
+                            <strong>วันที่: ${log.date}</strong>
+                            <span>แผนก: ${escapeHtml(log.location)}</span>
+                        </div>
+                        <div class="log-text">${escapeHtml(log.detail)}</div>
+                    </div>
+                    <button onclick="deleteLog(${log.id})" class="btn btn-danger-outline" title="ลบรายการ">ลบ</button>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ส่งรายงานสัปดาห์
+        const weeklyReportForm = document.getElementById('weekly-report-form');
+        weeklyReportForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const week = document.getElementById('weekly-select').value;
+            const summary = document.getElementById('weekly-summary').value;
+
+            const weeklyReports = JSON.parse(localStorage.getItem('intern_weekly_reports') || '[]');
+            weeklyReports.push({ week, summary, date: new Date().toLocaleDateString('th-TH') });
+            localStorage.setItem('intern_weekly_reports', JSON.stringify(weeklyReports));
+
+            document.getElementById('total-reports-count').textContent = weeklyReports.length;
+            weeklyReportForm.reset();
+            showToast('ส่งรายงานประจำสัปดาห์ที่ ' + week + ' เรียบร้อยแล้ว');
+        });
+
+        // ส่วนอาจารย์ประเมิน
+        const evalForm = document.getElementById('evaluation-form');
+        const evalStatus = document.getElementById('eval-status');
+        const evalComment = document.getElementById('eval-comment');
+        const studentStatusBadge = document.getElementById('student-status-badge');
+
+        function loadEvaluation() {
+            const savedEval = JSON.parse(localStorage.getItem('intern_evaluation') || 'null');
+            if (savedEval) {
+                evalStatus.value = savedEval.status;
+                evalComment.value = savedEval.comment || '';
+                updateBadge(savedEval.status);
+            }
+        }
+
+        function updateBadge(status) {
+            if (status === 'passed') {
+                studentStatusBadge.className = 'status-badge passed';
+                studentStatusBadge.textContent = 'ผ่านการฝึกงาน';
+            } else if (status === 'failed') {
+                studentStatusBadge.className = 'status-badge failed';
+                studentStatusBadge.textContent = 'ไม่ผ่านการฝึกงาน';
+            } else {
+                studentStatusBadge.className = 'status-badge pending';
+                studentStatusBadge.textContent = 'กำลังฝึกงาน';
+            }
+        }
+
+        evalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const evalData = {
+                status: evalStatus.value,
+                comment: evalComment.value
+            };
+            localStorage.setItem('intern_evaluation', JSON.stringify(evalData));
+            updateBadge(evalStatus.value);
+            showToast('บันทึกผลการประเมินเรียบร้อยแล้ว');
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderLogs();
+            loadEvaluation();
+            const weeklyReports = JSON.parse(localStorage.getItem('intern_weekly_reports') || '[]');
+            document.getElementById('total-reports-count').textContent = weeklyReports.length;
+        });
+    </script>
 </body>
 </html>
