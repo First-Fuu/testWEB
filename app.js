@@ -125,6 +125,12 @@ $('#logout-button').addEventListener('click', () => {
   switchAuth('login');
 });
 
+$('.user-menu')?.addEventListener('click', () => {
+  activeView = 'settings';
+  renderNav();
+  renderView();
+});
+
 $('#theme-toggle').addEventListener('click', () => {
   setTheme(document.body.classList.contains('light') ? 'dark' : 'light');
 });
@@ -133,17 +139,20 @@ const menus = {
   student: [
     ['home', '⌂', 'ภาพรวม'],
     ['daily', '◫', 'บันทึกงานประจำวัน'],
-    ['reports', '▤', 'รายงานประจำสัปดาห์']
+    ['reports', '▤', 'รายงานประจำสัปดาห์'],
+    ['settings', '⚙', 'ตั้งค่าบัญชี']
   ],
   teacher: [
     ['home', '⌂', 'ภาพรวม'],
-    ['review', '✓', 'ตรวจรายงานนักเรียน']
+    ['review', '✓', 'ตรวจรายงานนักเรียน'],
+    ['settings', '⚙', 'ตั้งค่าบัญชี']
   ],
   admin: [
     ['home', '⌂', 'ภาพรวมระบบ'],
     ['review', '✓', 'จัดการรายงาน'],
     ['logs', '◫', 'บันทึกงานทั้งหมด'],
-    ['users', '♙', 'จัดการบัญชี']
+    ['users', '♙', 'จัดการบัญชี'],
+    ['settings', '⚙', 'ตั้งค่าบัญชี']
   ]
 };
 
@@ -153,7 +162,8 @@ const pageInfo = {
   reports: ['รายงานประจำสัปดาห์', 'ส่งรายงานและติดตามผลการตรวจ'],
   review: ['ตรวจรายงานนักเรียน', 'ให้ความเห็น อนุมัติ หรือส่งกลับเพื่อแก้ไข'],
   logs: ['บันทึกงานทั้งหมด', 'ดูแลและจัดการข้อมูลการปฏิบัติงานทุกบัญชี'],
-  users: ['จัดการบัญชีผู้ใช้งาน', 'กำหนดบทบาทและดูแลสิทธิ์ในระบบ']
+  users: ['จัดการบัญชีผู้ใช้งาน', 'กำหนดบทบาทและดูแลสิทธิ์ในระบบ'],
+  settings: ['ตั้งค่าบัญชี', 'อัปเดตข้อมูลโปรไฟล์และความปลอดภัยของบัญชี']
 };
 
 let activeView = 'home';
@@ -168,7 +178,9 @@ function showApp() {
   $('#auth-screen').classList.add('hidden');
   $('#app-screen').classList.remove('hidden');
   $('#user-name').textContent = user.name;
-  $('#user-avatar').textContent = initials(user.name);
+  $('#user-avatar').innerHTML = user.avatar
+    ? `<img src="${user.avatar}" alt="รูปโปรไฟล์ของ ${esc(user.name)}">`
+    : initials(user.name);
   $('#current-role').textContent = user.department ? `${ROLE[user.role]} · ${user.department}` : ROLE[user.role];
   activeView = 'home';
   renderNav();
@@ -327,6 +339,57 @@ const views = {
           <input id="log-date-filter" class="input" type="date">
         </div>
         <div id="admin-log-list">${renderLogs(read(KEYS.logs), true)}</div>
+      </div>
+    `;
+  },
+
+  settings() {
+    const user = currentUser();
+    return `
+      <div class="settings-grid">
+        <div class="card">
+          <div class="card-title-row">
+            <div><h2>ข้อมูลโปรไฟล์</h2><p class="card-subtitle">ข้อมูลนี้จะแสดงในส่วนหัวของระบบ</p></div>
+          </div>
+          <form id="profile-form">
+            <div class="avatar-edit-section">
+              <div id="settings-avatar" class="avatar-large">${user.avatar ? `<img src="${user.avatar}" alt="รูปโปรไฟล์">` : initials(user.name)}</div>
+              <div class="avatar-edit-actions">
+                <label for="profile-avatar">รูปโปรไฟล์</label>
+                <div class="avatar-btn-row">
+                  <input id="profile-avatar" class="input" type="file" accept="image/png,image/jpeg,image/webp">
+                  ${user.avatar ? '<button class="btn btn-outline btn-small" type="button" id="remove-avatar">ลบรูป</button>' : ''}
+                </div>
+                <span class="muted">PNG, JPG หรือ WebP ขนาดไม่เกิน 1.5 MB</span>
+              </div>
+            </div>
+            <div style="margin-top:18px">
+              <label for="profile-name">ชื่อที่แสดง <span class="required">*</span></label>
+              <input id="profile-name" class="input" required maxlength="80" value="${esc(user.name)}" placeholder="ชื่อ - นามสกุล">
+            </div>
+            <div style="margin-top:15px">
+              <label>อีเมล</label>
+              <div class="static-field">${esc(user.email)}</div>
+              <span class="muted">ยังไม่สามารถเปลี่ยนอีเมลได้ในเวอร์ชันสาธิต</span>
+            </div>
+            <div style="margin-top:15px">
+              <label>แผนกวิชา / สาขา</label>
+              <div class="static-field">${esc(user.department || 'ไม่ระบุแผนก')}</div>
+            </div>
+            <div class="form-actions"><button class="btn btn-primary" type="submit">บันทึกโปรไฟล์</button></div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title-row">
+            <div><h2>เปลี่ยนรหัสผ่าน</h2><p class="card-subtitle">ควรใช้รหัสผ่านที่เดายากและไม่ซ้ำกับบัญชีอื่น</p></div>
+          </div>
+          <form id="password-form" class="form-grid">
+            <div><label for="current-password">รหัสผ่านปัจจุบัน <span class="required">*</span></label><div class="password-wrap"><input id="current-password" class="input" type="password" required autocomplete="current-password"><button type="button" class="password-toggle" data-password-toggle="current-password" aria-label="แสดงรหัสผ่าน">◉</button></div></div>
+            <div><label for="new-password">รหัสผ่านใหม่ <span class="required">*</span></label><div class="password-wrap"><input id="new-password" class="input" type="password" minlength="6" required autocomplete="new-password"><button type="button" class="password-toggle" data-password-toggle="new-password" aria-label="แสดงรหัสผ่าน">◉</button></div></div>
+            <div><label for="confirm-password">ยืนยันรหัสผ่านใหม่ <span class="required">*</span></label><div class="password-wrap"><input id="confirm-password" class="input" type="password" minlength="6" required autocomplete="new-password"><button type="button" class="password-toggle" data-password-toggle="confirm-password" aria-label="แสดงรหัสผ่าน">◉</button></div></div>
+            <div class="form-actions"><button class="btn btn-primary" type="submit">เปลี่ยนรหัสผ่าน</button></div>
+          </form>
+        </div>
       </div>
     `;
   },
@@ -492,6 +555,69 @@ function bindView() {
       renderView();
     });
   });
+
+  const profileForm = $('#profile-form');
+  if (profileForm) {
+    let selectedAvatar = currentUser().avatar || '';
+    const avatarInput = $('#profile-avatar');
+    avatarInput.addEventListener('change', async () => {
+      const file = avatarInput.files[0];
+      if (!file) return;
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+        avatarInput.value = '';
+        return toast('กรุณาเลือกไฟล์ PNG, JPG หรือ WebP');
+      }
+      if (file.size > 1.5 * 1024 * 1024) {
+        avatarInput.value = '';
+        return toast('กรุณาเลือกรูปภาพขนาดไม่เกิน 1.5 MB');
+      }
+      try {
+        selectedAvatar = await fileToDataUrl(file);
+        $('#settings-avatar').innerHTML = `<img src="${selectedAvatar}" alt="รูปโปรไฟล์">`;
+      } catch {
+        toast('อ่านไฟล์รูปภาพไม่สำเร็จ');
+      }
+    });
+    $('#remove-avatar')?.addEventListener('click', () => {
+      selectedAvatar = '';
+      avatarInput.value = '';
+      $('#settings-avatar').textContent = initials(currentUser().name);
+      $('#remove-avatar').remove();
+    });
+    profileForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const users = read(KEYS.users);
+      const user = users.find(item => item.id === currentUser().id);
+      const name = $('#profile-name').value.trim();
+      if (!name) return toast('กรุณากรอกชื่อที่แสดง');
+      user.name = name;
+      user.avatar = selectedAvatar;
+      save(KEYS.users, users);
+      showApp();
+      activeView = 'settings';
+      renderNav();
+      renderView();
+      toast('บันทึกโปรไฟล์เรียบร้อยแล้ว');
+    });
+  }
+
+  const passwordForm = $('#password-form');
+  if (passwordForm) {
+    passwordForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const users = read(KEYS.users);
+      const user = users.find(item => item.id === currentUser().id);
+      const currentPassword = $('#current-password').value;
+      const newPassword = $('#new-password').value;
+      if (user.password !== currentPassword) return toast('รหัสผ่านปัจจุบันไม่ถูกต้อง');
+      if (newPassword.length < 6) return toast('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
+      if (newPassword !== $('#confirm-password').value) return toast('ยืนยันรหัสผ่านใหม่ไม่ตรงกัน');
+      user.password = newPassword;
+      save(KEYS.users, users);
+      passwordForm.reset();
+      toast('เปลี่ยนรหัสผ่านเรียบร้อยแล้ว');
+    });
+  }
 
   const image = $('#log-image');
   if (image) {
