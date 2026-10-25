@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InternFlow — ระบบติดตามการฝึกงาน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <section id="auth-screen" class="auth-shell">
+    <div class="auth-orb orb-one"></div><div class="auth-orb orb-two"></div><div class="auth-grid"></div>
+    <div class="universe" aria-hidden="true">
+      <i class="star star-a"></i><i class="star star-b"></i><i class="star star-c"></i><i class="star star-d"></i><i class="star star-e"></i><i class="star star-f"></i><i class="star star-g"></i><i class="star star-h"></i><i class="star star-i"></i>
+      <div class="solar-system" aria-hidden="true"><span class="sun"></span><span class="orbit orbit-one"><b class="planet planet-one"></b></span><span class="orbit orbit-two"><b class="planet planet-two"></b></span><span class="orbit orbit-three"><b class="planet planet-three"></b></span></div>
+    </div>
+    <div class="auth-layout">
+      <aside class="auth-showcase">
+        <a class="brand auth-brand" href="#"><span class="brand-mark">✦</span><span>InternFlow</span></a>
+        <div class="showcase-copy">
+          <span class="eyebrow"><i></i> INTERNSHIP OS / 2026</span>
+          <h1>สร้างเส้นทาง<br><em>สู่อนาคต</em>ของคุณ</h1>
+          <p>บันทึกทุกประสบการณ์ฝึกงาน ติดตามความก้าวหน้า และเปลี่ยนทุกผลงานให้มีความหมาย</p>
+        </div>
+        <div class="showcase-stats">
+          <div><strong>01</strong><span>พื้นที่บันทึก<br>การทำงานของคุณ</span></div>
+          <div><strong>24/7</strong><span>ติดตามสถานะ<br>ได้ทุกเวลา</span></div>
+          <div><strong>∞</strong><span>โอกาสในการ<br>เรียนรู้</span></div>
+        </div>
+        <p class="auth-footer">© 2026 InternFlow · Your growth, in motion.</p>
+      </aside>
+      <div class="auth-card-wrap">
+        <div class="auth-card">
+          <div class="auth-card-top"><span class="auth-card-dot"></span><span>SECURE ACCESS</span></div>
+          <div id="login-panel">
+            <span class="auth-kicker">WELCOME BACK</span>
+            <h2 class="auth-heading">ยินดีต้อนรับกลับมา</h2>
+            <p class="auth-lead">เข้าสู่ระบบเพื่อไปต่อกับเส้นทางฝึกงานของคุณ</p>
+            <form id="login-form" class="form-grid">
+              <div><label for="login-email">อีเมล</label><div class="auth-input-wrap"><span class="field-icon">✉</span><input id="login-email" class="input" type="email" autocomplete="email" required placeholder="name@example.com"></div></div>
+              <div><label for="login-password">รหัสผ่าน</label><div class="password-wrap auth-input-wrap"><span class="field-icon">⌑</span><input id="login-password" class="input" type="password" autocomplete="current-password" required placeholder="รหัสผ่านของคุณ"><button type="button" class="password-toggle" data-password-toggle="login-password" aria-label="แสดงรหัสผ่าน">◉</button></div></div>
+              <button class="btn btn-primary btn-block auth-submit" type="submit"><span>เข้าสู่ระบบ</span><b>→</b></button>
+            </form>
+            <p class="auth-switch">ยังไม่มีพื้นที่ของตัวเอง? <button class="text-button" type="button" data-auth-panel="register">สร้างบัญชีเลย <span>→</span></button></p>
+            <div class="demo-quick-auth">
+              <span class="demo-quick-label">⚡ เข้าสู่ระบบทดสอบด่วน (คลิกเดียวใส่ข้อมูล):</span>
+              <div class="demo-quick-btns">
+                <button type="button" class="demo-chip" data-demo="student">🎓 นักเรียน</button>
+                <button type="button" class="demo-chip" data-demo="teacher">👨‍🏫 อาจารย์</button>
+                <button type="button" class="demo-chip" data-demo="admin">👑 แอดมิน</button>
+              </div>
+            </div>
+          </div>
+          <div id="register-panel" class="hidden">
+            <span class="auth-kicker">GET STARTED</span>
+            <h2 class="auth-heading">เริ่มต้นเส้นทางใหม่</h2>
+            <p class="auth-lead">สร้างบัญชีเพื่อเก็บทุกก้าวสำคัญของการฝึกงาน</p>
+            <div class="notice">เวอร์ชันสาธิต: ข้อมูลเก็บเฉพาะในเบราว์เซอร์เครื่องนี้ บัญชีใหม่จะเป็นนักเรียนโดยอัตโนมัติ</div>
+            <form id="register-form" class="form-grid">
+              <div><label for="register-name">ชื่อที่แสดง <span class="required">*</span></label><input id="register-name" class="input" required maxlength="80" placeholder="ชื่อ - นามสกุล"></div>
+              <div><label for="register-department">แผนกวิชา / สาขา <span class="required">*</span></label><select id="register-department" class="input" required></select></div>
+              <div><label for="register-email">อีเมล <span class="required">*</span></label><input id="register-email" class="input" type="email" required autocomplete="email" placeholder="name@example.com"></div>
+              <div><label for="register-password">รหัสผ่าน <span class="required">*</span></label><div class="password-wrap"><input id="register-password" class="input" type="password" minlength="6" required autocomplete="new-password" placeholder="อย่างน้อย 6 ตัวอักษร"><button type="button" class="password-toggle" data-password-toggle="register-password" aria-label="แสดงรหัสผ่าน">◉</button></div></div>
+              <button class="btn btn-primary btn-block auth-submit" type="submit"><span>สร้างบัญชีและเข้าสู่ระบบ</span><b>→</b></button>
+            </form>
+            <p class="auth-switch">มีบัญชีอยู่แล้ว? <button class="text-button" type="button" data-auth-panel="login">เข้าสู่ระบบ <span>→</span></button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="app-screen" class="hidden">
+    <header class="app-header"><div class="header-inner">
+      <a class="brand" href="#"><span class="brand-mark">✦</span><span>InternFlow</span></a>
+      <div class="header-actions"><button id="theme-toggle" class="icon-btn" title="สลับธีม" aria-label="สลับธีม">☼</button><div class="user-menu"><span id="user-avatar" class="avatar"></span><span id="user-name" class="user-name"></span></div><button id="logout-button" class="btn btn-outline btn-small">ออกจากระบบ</button></div>
+    </div></header>
+    <div class="app-shell">
+      <div class="page-intro"><div><h1 id="page-title">ภาพรวมการฝึกงาน</h1><p id="page-subtitle">ติดตามความก้าวหน้าของคุณได้ในที่เดียว</p></div><span id="current-role" class="role-pill"></span></div>
+      <div class="app-layout"><nav id="sidebar" class="sidebar"></nav><main id="content" class="content"></main></div>
+    </div>
+  </section>
+  <div id="modal-root"></div>
+  <div id="toast" class="toast" role="status"></div>
+</body>
+</html>

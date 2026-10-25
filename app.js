@@ -3,6 +3,7 @@ const KEYS = {
   session: 'internflow_session',
   logs: 'internflow_logs',
   reports: 'internflow_reports',
+  departments: 'internflow_departments',
   theme: 'internflow_theme'
 };
 
@@ -12,12 +13,15 @@ const ROLE = {
   admin: 'ผู้ดูแลระบบ'
 };
 
-const DEPARTMENTS = [
+const DEFAULT_DEPARTMENTS = [
   'เทคโนโลยีธุรกิจดิจิทัล',
-  'เทคโนโลยีสารสนเทศ',
+  'คอมพิวเตอร์กราฟิก',
+  'การโรงแรม',
   'การบัญชี',
   'การตลาด',
-  'ธุรกิจค้าปลีก'
+  'การเลขานุการ',
+  'สามัญสัมพันธ์',
+  'ภาษาต่างประเทศ',
 ];
 
 const $ = s => document.querySelector(s);
@@ -29,6 +33,7 @@ const read = (key, fallback = []) => {
   }
 };
 const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+const departments = () => read(KEYS.departments, DEFAULT_DEPARTMENTS);
 const uid = () => crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 const esc = value => {
   const d = document.createElement('div');
@@ -36,6 +41,17 @@ const esc = value => {
   return d.innerHTML;
 };
 const formatDate = value => value ? new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium' }).format(new Date(`${value}T00:00:00`)) : '';
+const safeUrl = value => {
+  try {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    const formatted = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    const url = new URL(formatted);
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+  } catch {
+    return '';
+  }
+};
 const today = () => new Date().toISOString().slice(0, 10);
 const currentUser = () => {
   const id = read(KEYS.session, null);
@@ -54,7 +70,10 @@ function toast(message) {
 function setTheme(theme) {
   document.body.classList.toggle('light', theme === 'light');
   localStorage.setItem(KEYS.theme, theme);
-  $('#theme-toggle').textContent = theme === 'light' ? '☾' : '☼';
+  const icon = theme === 'light' ? '☾' : '☼';
+  $('#theme-toggle').textContent = icon;
+  const authBtn = $('#auth-theme-toggle');
+  if (authBtn) authBtn.textContent = icon;
 }
 
 function initials(name) {
@@ -70,13 +89,52 @@ function renderDepartmentOptions() {
   const select = $('#register-department');
   if (!select) return;
   select.innerHTML = '<option value="">เลือกแผนกวิชา</option>' +
-    DEPARTMENTS.map(department => `<option value="${esc(department)}">${esc(department)}</option>`).join('');
+    departments().map(department => `<option value="${esc(department)}">${esc(department)}</option>`).join('');
 }
 
 renderDepartmentOptions();
 
+$('#auth-theme-toggle')?.addEventListener('click', () => {
+  setTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+});
+
+const solarSystem = $('#solar-system');
+if (solarSystem) {
+  let boostTimer;
+  const boostSolarSystem = () => {
+    solarSystem.classList.remove('boost');
+    void solarSystem.offsetWidth;
+    solarSystem.classList.add('boost');
+    clearTimeout(boostTimer);
+    boostTimer = setTimeout(() => solarSystem.classList.remove('boost'), 2400);
+  };
+  solarSystem.addEventListener('click', boostSolarSystem);
+  solarSystem.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      boostSolarSystem();
+    }
+  });
+}
+
 document.querySelectorAll('[data-auth-panel]').forEach(button => {
   button.addEventListener('click', () => switchAuth(button.dataset.authPanel));
+});
+
+const DEMO_ACCOUNTS = {
+  student: ['student@internflow.local', 'Student@InternFlow2026'],
+  teacher: ['teacher@internflow.local', 'Teacher@InternFlow2026'],
+  admin: ['admin@internflow.local', 'Admin@InternFlow2026']
+};
+
+document.querySelectorAll('[data-demo]').forEach(button => {
+  button.addEventListener('click', () => {
+    const [email, password] = DEMO_ACCOUNTS[button.dataset.demo];
+    $('#login-email').value = email;
+    $('#login-password').value = password;
+    $('#login-email').focus();
+    toast(`กรอกบัญชี${button.textContent.trim().slice(2)}ให้แล้ว กดเข้าสู่ระบบได้เลย`);
+  });
 });
 
 document.addEventListener('click', event => {
@@ -152,6 +210,7 @@ const menus = {
     ['review', '✓', 'จัดการรายงาน'],
     ['logs', '◫', 'บันทึกงานทั้งหมด'],
     ['users', '♙', 'จัดการบัญชี'],
+    ['departments', '🏢', 'จัดการแผนกวิชา'],
     ['settings', '⚙', 'ตั้งค่าบัญชี']
   ]
 };
@@ -163,6 +222,7 @@ const pageInfo = {
   review: ['ตรวจรายงานนักเรียน', 'ให้ความเห็น อนุมัติ หรือส่งกลับเพื่อแก้ไข'],
   logs: ['บันทึกงานทั้งหมด', 'ดูแลและจัดการข้อมูลการปฏิบัติงานทุกบัญชี'],
   users: ['จัดการบัญชีผู้ใช้งาน', 'กำหนดบทบาทและดูแลสิทธิ์ในระบบ'],
+  departments: ['จัดการแผนกวิชา', 'เพิ่ม ลบ และติดตามจำนวนผู้ใช้งานในแต่ละแผนก'],
   settings: ['ตั้งค่าบัญชี', 'อัปเดตข้อมูลโปรไฟล์และความปลอดภัยของบัญชี']
 };
 
@@ -292,6 +352,11 @@ const views = {
             <label for="report-summary">สรุปผลการทำงานและความรู้ที่ได้รับ <span class="required">*</span></label>
             <textarea id="report-summary" required maxlength="3000" placeholder="สรุปงานที่ทำ ปัญหาที่พบ และสิ่งที่ได้เรียนรู้..."></textarea>
           </div>
+          <div style="margin-top:15px">
+            <label for="report-link">ลิงก์ไฟล์หรือผลงาน <span class="muted">(ไม่บังคับ)</span></label>
+            <input id="report-link" class="input" type="url" maxlength="2000" placeholder="เช่น https://drive.google.com/... หรือ https://github.com/...">
+            <span class="muted">แนบลิงก์ Google Drive, OneDrive, GitHub หรือเว็บไซต์ที่เกี่ยวข้องกับรายงาน</span>
+          </div>
           <div class="form-actions"><button class="btn btn-primary" type="submit">ส่งรายงาน</button></div>
         </form>
       </div>
@@ -314,7 +379,7 @@ const views = {
           <input id="report-search" class="input" placeholder="ค้นหาชื่อนักเรียน หรือเนื้อหารายงาน">
           <select id="report-dept-filter">
             <option value="all">ทุกแผนกวิชา</option>
-            ${DEPARTMENTS.map(department => `<option value="${esc(department)}">${esc(department)}</option>`).join('')}
+            ${departments().map(department => `<option value="${esc(department)}">${esc(department)}</option>`).join('')}
           </select>
           <select id="report-status-filter">
             <option value="all">ทุกสถานะ</option>
@@ -373,8 +438,11 @@ const views = {
               <span class="muted">ยังไม่สามารถเปลี่ยนอีเมลได้ในเวอร์ชันสาธิต</span>
             </div>
             <div style="margin-top:15px">
-              <label>แผนกวิชา / สาขา</label>
-              <div class="static-field">${esc(user.department || 'ไม่ระบุแผนก')}</div>
+              <label for="profile-department">แผนกวิชา / สาขา</label>
+              <select id="profile-department" class="input">
+                <option value="">ไม่ระบุแผนก</option>
+                ${departments().map(department => `<option value="${esc(department)}" ${user.department === department ? 'selected' : ''}>${esc(department)}</option>`).join('')}
+              </select>
             </div>
             <div class="form-actions"><button class="btn btn-primary" type="submit">บันทึกโปรไฟล์</button></div>
           </form>
@@ -420,13 +488,68 @@ const views = {
                   <td>
                     <select class="role-select" data-user-department="${u.id}">
                       <option value="">ไม่ระบุแผนก</option>
-                      ${DEPARTMENTS.map(department => `<option value="${esc(department)}" ${u.department === department ? 'selected' : ''}>${esc(department)}</option>`).join('')}
+                      ${departments().map(department => `<option value="${esc(department)}" ${u.department === department ? 'selected' : ''}>${esc(department)}</option>`).join('')}
                     </select>
                   </td>
                   <td>${new Intl.DateTimeFormat('th-TH', { dateStyle: 'short' }).format(new Date(u.createdAt))}</td>
                   <td>${u.id === currentUser().id ? '<span class="muted">บัญชีปัจจุบัน</span>' : `<button class="btn btn-danger btn-small" data-delete-user="${u.id}">ลบ</button>`}</td>
                 </tr>
               `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  },
+
+  departments() {
+    const depts = departments();
+    const users = read(KEYS.users);
+    return `
+      <div class="card">
+        <div class="card-title-row">
+          <div><h2>เพิ่มแผนกวิชาใหม่</h2><p class="card-subtitle">สร้างแผนกวิชาเพื่อให้นักเรียนและอาจารย์เลือกสังกัด</p></div>
+        </div>
+        <form id="add-dept-form" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+          <div style="flex:1;min-width:240px;">
+            <label for="new-dept-name">ชื่อแผนกวิชา / สาขา <span class="required">*</span></label>
+            <input id="new-dept-name" class="input" required maxlength="100" placeholder="เช่น แผนกวิชาช่างยนต์">
+          </div>
+          <button class="btn btn-primary" type="submit">เพิ่มแผนกวิชา</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title-row">
+          <div><h2>รายการแผนกวิชาในระบบ</h2><p class="card-subtitle">ทั้งหมด ${depts.length} แผนกวิชา</p></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:50px">ลำดับ</th>
+                <th>ชื่อแผนกวิชา</th>
+                <th>นักเรียนในแผนก</th>
+                <th>อาจารย์ในแผนก</th>
+                <th>การจัดการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${depts.map((dept, idx) => {
+                const studentCount = users.filter(u => u.role === 'student' && u.department === dept).length;
+                const teacherCount = users.filter(u => u.role === 'teacher' && u.department === dept).length;
+                return `
+                  <tr>
+                    <td>${idx + 1}</td>
+                    <td><b>${esc(dept)}</b></td>
+                    <td><span class="role-pill">${studentCount} คน</span></td>
+                    <td><span class="role-pill">${teacherCount} คน</span></td>
+                    <td>
+                      <button class="btn btn-danger btn-small" data-delete-dept="${esc(dept)}">ลบแผนก</button>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
             </tbody>
           </table>
         </div>
@@ -460,6 +583,7 @@ function renderReports(reports, showDelete = false, includeStudent = false) {
                 <span class="report-status ${report.status}">${statusLabel(report.status)}</span>
               </div>
               <div class="entry-text">${esc(report.summary)}</div>
+              ${safeUrl(report.link) ? `<div class="report-attachment"><a class="link-chip" href="${esc(safeUrl(report.link))}" target="_blank" rel="noopener noreferrer"><span>🔗 ไฟล์หรือผลงานที่แนบ</span><span class="link-chip-text">${esc(report.link)}</span><span class="external-icon">↗</span></a></div>` : ''}
               ${report.feedback ? `<div class="feedback"><b>ความเห็นจากอาจารย์:</b> ${esc(report.feedback)}</div>` : ''}
             </div>
             ${showDelete ? `<div class="entry-actions"><button class="btn btn-danger btn-small" data-delete-report="${report.id}">ลบ</button></div>` : ''}
@@ -501,6 +625,7 @@ function renderReviewReports() {
                 <span class="report-status ${report.status}">${statusLabel(report.status)}</span>
               </div>
               <div class="entry-text">${esc(report.summary)}</div>
+              ${safeUrl(report.link) ? `<div class="report-attachment"><a class="link-chip" href="${esc(safeUrl(report.link))}" target="_blank" rel="noopener noreferrer"><span>🔗 ไฟล์หรือผลงานที่แนบ</span><span class="link-chip-text">${esc(report.link)}</span><span class="external-icon">↗</span></a></div>` : ''}
               ${report.feedback ? `<div class="feedback"><b>ความเห็นเดิม:</b> ${esc(report.feedback)}</div>` : ''}
               <div class="review-controls">
                 <select data-review-status="${report.id}">
@@ -591,6 +716,7 @@ function bindView() {
       const name = $('#profile-name').value.trim();
       if (!name) return toast('กรุณากรอกชื่อที่แสดง');
       user.name = name;
+      user.department = $('#profile-department').value;
       user.avatar = selectedAvatar;
       save(KEYS.users, users);
       showApp();
@@ -600,6 +726,35 @@ function bindView() {
       toast('บันทึกโปรไฟล์เรียบร้อยแล้ว');
     });
   }
+
+  const addDepartmentForm = $('#add-dept-form');
+  if (addDepartmentForm) {
+    addDepartmentForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const name = $('#new-dept-name').value.trim();
+      const depts = departments();
+      if (!name) return toast('กรุณากรอกชื่อแผนกวิชา');
+      if (depts.some(dept => dept.toLowerCase() === name.toLowerCase())) return toast('มีแผนกวิชานี้อยู่แล้ว');
+      depts.push(name);
+      save(KEYS.departments, depts);
+      renderDepartmentOptions();
+      toast('เพิ่มแผนกวิชาเรียบร้อยแล้ว');
+      renderView();
+    });
+  }
+
+  document.querySelectorAll('[data-delete-dept]').forEach(button => {
+    button.addEventListener('click', () => {
+      const name = button.dataset.deleteDept;
+      const usersInDept = read(KEYS.users).filter(user => user.department === name).length;
+      if (usersInDept) return toast(`ยังลบไม่ได้ มีผู้ใช้งาน ${usersInDept} คนอยู่ในแผนกนี้`);
+      if (!confirm(`ต้องการลบแผนก “${name}” หรือไม่?`)) return;
+      save(KEYS.departments, departments().filter(dept => dept !== name));
+      renderDepartmentOptions();
+      toast('ลบแผนกวิชาเรียบร้อยแล้ว');
+      renderView();
+    });
+  });
 
   const passwordForm = $('#password-form');
   if (passwordForm) {
@@ -678,6 +833,7 @@ function bindView() {
         userId: currentUser().id,
         week: $('#report-week').value,
         summary: $('#report-summary').value.trim(),
+        link: safeUrl($('#report-link').value),
         status: 'pending',
         feedback: '',
         submittedAt: new Date().toISOString()
