@@ -692,9 +692,9 @@ function bindView() {
         avatarInput.value = '';
         return toast('กรุณาเลือกไฟล์ PNG, JPG หรือ WebP');
       }
-      if (file.size > 1.5 * 1024 * 1024) {
+      if (file.size > 10 * 1024 * 1024) {
         avatarInput.value = '';
-        return toast('กรุณาเลือกรูปภาพขนาดไม่เกิน 1.5 MB');
+        return toast('กรุณาเลือกรูปภาพขนาดไม่เกิน 10 MB');
       }
       try {
         selectedAvatar = await fileToDataUrl(file);
@@ -783,9 +783,9 @@ function bindView() {
         wrap.style.display = 'none';
         return;
       }
-      if (file.size > 1.5 * 1024 * 1024) {
+      if (file.size > 10 * 1024 * 1024) {
         image.value = '';
-        toast('กรุณาเลือกรูปภาพขนาดไม่เกิน 1.5 MB');
+        toast('กรุณาเลือกรูปภาพขนาดไม่เกิน 10 MB');
         return;
       }
       const value = await fileToDataUrl(file);
@@ -967,7 +967,7 @@ function seedDefaultAccounts() {
   const demoAccounts = [
     {
       id: 'internflow-default-admin',
-      name: 'ผู้ดูแลระบบ InternFlow',
+      name: 'ผู้ดูแลระบบ by PT-FU',
       email: 'admin@internflow.local',
       password: 'Admin@InternFlow2026',
       role: 'admin',
@@ -976,7 +976,7 @@ function seedDefaultAccounts() {
     },
     {
       id: 'internflow-default-teacher',
-      name: 'อาจารย์สมศักดิ์ นิเทศก์ดี',
+      name: 'อาจารย์ปัณณรุจน์ สอนดีลบ',
       email: 'teacher@internflow.local',
       password: 'Teacher@InternFlow2026',
       role: 'teacher',
@@ -985,7 +985,7 @@ function seedDefaultAccounts() {
     },
     {
       id: 'internflow-default-student',
-      name: 'นายปีโป้ นักเรียนขยัน',
+      name: 'นายฐานุปัติ นกกระตั่ว',
       email: 'student@internflow.local',
       password: 'Student@InternFlow2026',
       role: 'student',
