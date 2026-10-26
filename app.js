@@ -98,6 +98,22 @@ $('#auth-theme-toggle')?.addEventListener('click', () => {
   setTheme(document.body.classList.contains('light') ? 'dark' : 'light');
 });
 
+const authShell = $('#auth-screen');
+const drawerTrigger = $('#std-drawer-trigger');
+const drawerClose = $('#std-drawer-close');
+const drawerBackdrop = $('#std-drawer-backdrop');
+const setStdDrawer = open => {
+  authShell?.classList.toggle('drawer-open', open);
+  drawerBackdrop?.classList.toggle('show', open);
+  drawerBackdrop?.setAttribute('aria-hidden', String(!open));
+};
+drawerTrigger?.addEventListener('click', () => setStdDrawer(true));
+drawerClose?.addEventListener('click', () => setStdDrawer(false));
+drawerBackdrop?.addEventListener('click', () => setStdDrawer(false));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && authShell?.classList.contains('drawer-open')) setStdDrawer(false);
+});
+
 const solarSystem = $('#solar-system');
 if (solarSystem) {
   let boostTimer;
