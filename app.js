@@ -117,6 +117,44 @@ if (solarSystem) {
   });
 }
 
+const rainbow = $('#rainbow');
+if (rainbow) {
+  let cascadeTimer;
+  const triggerRainbowAnimation = () => {
+    rainbow.classList.remove('cascade');
+    void rainbow.offsetWidth;
+    rainbow.classList.add('cascade');
+    clearTimeout(cascadeTimer);
+    cascadeTimer = setTimeout(() => rainbow.classList.remove('cascade'), 2600);
+  };
+  rainbow.addEventListener('click', triggerRainbowAnimation);
+  rainbow.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      triggerRainbowAnimation();
+    }
+  });
+}
+
+const floatingPlanet = $('#floating-planet');
+if (floatingPlanet) {
+  let planetTimer;
+  const boostFloatingPlanet = () => {
+    floatingPlanet.classList.remove('pulse');
+    void floatingPlanet.offsetWidth;
+    floatingPlanet.classList.add('pulse');
+    clearTimeout(planetTimer);
+    planetTimer = setTimeout(() => floatingPlanet.classList.remove('pulse'), 2200);
+  };
+  floatingPlanet.addEventListener('click', boostFloatingPlanet);
+  floatingPlanet.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      boostFloatingPlanet();
+    }
+  });
+}
+
 document.querySelectorAll('[data-auth-panel]').forEach(button => {
   button.addEventListener('click', () => switchAuth(button.dataset.authPanel));
 });
@@ -203,6 +241,7 @@ const menus = {
   teacher: [
     ['home', '⌂', 'ภาพรวม'],
     ['review', '✓', 'ตรวจรายงานนักเรียน'],
+    ['logs', '◫', 'บันทึกงานนักเรียน'],
     ['settings', '⚙', 'ตั้งค่าบัญชี']
   ],
   admin: [
@@ -277,12 +316,45 @@ const views = {
     const ownReports = reports.filter(r => r.userId === user.id);
 
     if (user.role === 'student') {
+      const totalHours = ownLogs.reduce((sum, l) => sum + (Number(l.hours) || 8), 0);
+      const targetHours = 320;
+      const percent = Math.min(100, Math.round((totalHours / targetHours) * 100));
+
       return `
         <div class="stats">
-          <div class="stat"><div class="stat-label">บันทึกงานทั้งหมด</div><div class="stat-value stat-accent">${ownLogs.length}</div></div>
+          <div class="stat"><div class="stat-label">ชั่วโมงฝึกงานสะสม</div><div class="stat-value stat-accent">${totalHours} <span style="font-size:1rem;font-weight:600;color:var(--muted);">/ ${targetHours} ชม.</span></div></div>
+          <div class="stat"><div class="stat-label">บันทึกงานทั้งหมด</div><div class="stat-value">${ownLogs.length} วัน</div></div>
           <div class="stat"><div class="stat-label">รายงานที่ส่งแล้ว</div><div class="stat-value">${ownReports.length}</div></div>
           <div class="stat"><div class="stat-label">รอตรวจ / ให้แก้ไข</div><div class="stat-value">${ownReports.filter(r => r.status !== 'approved').length}</div></div>
         </div>
+
+        <div class="card workplace-card">
+          ${user.workplace ? `
+            <div class="workplace-header">
+              <div class="workplace-info">
+                <span class="workplace-tag">🏢 สถานที่ฝึกงานปัจจุบัน</span>
+                <h3 class="workplace-title">${esc(user.workplace)}</h3>
+              </div>
+              <div class="workplace-actions">
+                ${safeUrl(user.workplaceMap) ? `<a href="${esc(safeUrl(user.workplaceMap))}" target="_blank" rel="noopener noreferrer" class="btn btn-small btn-map">📍 เปิดแผนที่ Google Maps ↗</a>` : ''}
+                <button class="btn btn-outline btn-small" data-go="settings">✏️ แก้ไขข้อมูล</button>
+              </div>
+            </div>
+          ` : `
+            <div class="workplace-empty">
+              <div><strong>🏢 ยังไม่ได้ระบุสถานที่ฝึกงาน</strong><div style="font-size:.78rem;margin-top:2px;">ระบุชื่อบริษัทและลิงก์ Google Maps เพื่อให้อาจารย์ติดตามการฝึกงานได้</div></div>
+              <button class="btn btn-primary btn-small" data-go="settings">+ ระบุสถานที่ฝึกงาน</button>
+            </div>
+          `}
+          <div class="hours-progress-box">
+            <div class="progress-meta">
+              <span>ความคืบหน้าชั่วโมงฝึกงาน: <strong>${totalHours} ชม. (${percent}%)</strong> จากเป้าหมาย ${targetHours} ชม.</span>
+              <strong>${percent}%</strong>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-title-row">
             <div><h2>สถานะรายงานล่าสุด</h2><p class="card-subtitle">ความเห็นจากอาจารย์จะปรากฏที่นี่</p></div>
@@ -319,7 +391,17 @@ const views = {
         <form id="daily-form">
           <div class="two-col">
             <div><label for="log-date">วันที่ปฏิบัติงาน <span class="required">*</span></label><input id="log-date" class="input" type="date" required value="${today()}"></div>
-            <div><label for="log-location">แผนก / สถานที่ปฏิบัติงาน <span class="required">*</span></label><input id="log-location" class="input" maxlength="120" required placeholder="เช่น แผนกเทคโนโลยีสารสนเทศ"></div>
+            <div><label for="log-location">แผนก / จุดที่ปฏิบัติงาน <span class="required">*</span></label><input id="log-location" class="input" maxlength="120" required placeholder="เช่น แผนกเทคโนโลยีสารสนเทศ"></div>
+          </div>
+          <div style="margin-top:15px">
+            <label for="log-hours">วันนี้ฝึกงานกี่ชั่วโมง? <span class="required">*</span></label>
+            <div class="hours-selector">
+              <div class="hour-chips" role="group" aria-label="เลือกจำนวนชั่วโมงฝึกงาน">
+                ${[4, 6, 7, 8, 9].map(hours => `<button class="hour-chip ${hours === 8 ? 'active' : ''}" type="button" data-hours="${hours}">${hours} ชม.</button>`).join('')}
+              </div>
+              <div class="hour-input-wrap"><input id="log-hours" class="input" type="number" min="0.5" max="24" step="0.5" required value="8" aria-label="จำนวนชั่วโมงฝึกงาน"><span class="hour-unit">ชั่วโมง</span></div>
+            </div>
+            <span class="muted">เลือกจำนวนชั่วโมง หรือกรอกจำนวนอื่นได้ เช่น 7.5 ชั่วโมง</span>
           </div>
           <div style="margin-top:15px">
             <label for="log-detail">รายละเอียดงานที่ปฏิบัติ <span class="required">*</span></label>
@@ -444,6 +526,17 @@ const views = {
                 ${departments().map(department => `<option value="${esc(department)}" ${user.department === department ? 'selected' : ''}>${esc(department)}</option>`).join('')}
               </select>
             </div>
+            ${user.role === 'student' ? `
+              <div style="margin-top:15px">
+                <label for="profile-workplace">สถานที่ฝึกงาน / ชื่อบริษัท <span class="muted">(ไม่บังคับ)</span></label>
+                <input id="profile-workplace" class="input" maxlength="160" value="${esc(user.workplace || '')}" placeholder="เช่น บริษัท ตัวอย่าง จำกัด">
+              </div>
+              <div style="margin-top:15px">
+                <label for="profile-workplace-map">ลิงก์ Google Maps <span class="muted">(ไม่บังคับ)</span></label>
+                <input id="profile-workplace-map" class="input" type="url" maxlength="2000" value="${esc(user.workplaceMap || '')}" placeholder="https://maps.app.goo.gl/...">
+                <span class="muted">คัดลอกลิงก์สถานที่จาก Google Maps มาวางได้เลย</span>
+              </div>
+            ` : ''}
             <div class="form-actions"><button class="btn btn-primary" type="submit">บันทึกโปรไฟล์</button></div>
           </form>
         </div>
@@ -582,6 +675,12 @@ function renderReports(reports, showDelete = false, includeStudent = false) {
                 <span>${new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium' }).format(new Date(report.submittedAt))}</span>
                 <span class="report-status ${report.status}">${statusLabel(report.status)}</span>
               </div>
+              ${includeStudent && student?.workplace ? `
+                <div style="margin:4px 0 2px;font-size:.76rem;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span>🏢 ${esc(student.workplace)}</span>
+                  ${safeUrl(student.workplaceMap) ? `<a href="${esc(safeUrl(student.workplaceMap))}" target="_blank" rel="noopener noreferrer" class="link-chip" style="padding:1px 7px;font-size:.7rem;">📍 แผนที่ ↗</a>` : ''}
+                </div>
+              ` : ''}
               <div class="entry-text">${esc(report.summary)}</div>
               ${safeUrl(report.link) ? `<div class="report-attachment"><a class="link-chip" href="${esc(safeUrl(report.link))}" target="_blank" rel="noopener noreferrer"><span>🔗 ไฟล์หรือผลงานที่แนบ</span><span class="link-chip-text">${esc(report.link)}</span><span class="external-icon">↗</span></a></div>` : ''}
               ${report.feedback ? `<div class="feedback"><b>ความเห็นจากอาจารย์:</b> ${esc(report.feedback)}</div>` : ''}
@@ -624,17 +723,36 @@ function renderReviewReports() {
                 <strong>สัปดาห์ที่ ${esc(report.week)}</strong>
                 <span class="report-status ${report.status}">${statusLabel(report.status)}</span>
               </div>
+              ${student?.workplace ? `
+                <div style="margin:4px 0 2px;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span>🏢 ฝึกงานที่: <strong style="color:var(--text);">${esc(student.workplace)}</strong></span>
+                  ${safeUrl(student.workplaceMap) ? `<a href="${esc(safeUrl(student.workplaceMap))}" target="_blank" rel="noopener noreferrer" class="link-chip" style="padding:2px 8px;font-size:.72rem;">📍 แผนที่ Google Maps ↗</a>` : ''}
+                </div>
+              ` : ''}
               <div class="entry-text">${esc(report.summary)}</div>
               ${safeUrl(report.link) ? `<div class="report-attachment"><a class="link-chip" href="${esc(safeUrl(report.link))}" target="_blank" rel="noopener noreferrer"><span>🔗 ไฟล์หรือผลงานที่แนบ</span><span class="link-chip-text">${esc(report.link)}</span><span class="external-icon">↗</span></a></div>` : ''}
               ${report.feedback ? `<div class="feedback"><b>ความเห็นเดิม:</b> ${esc(report.feedback)}</div>` : ''}
               <div class="review-controls">
-                <select data-review-status="${report.id}">
-                  <option value="pending" ${report.status === 'pending' ? 'selected' : ''}>รอตรวจ</option>
-                  <option value="revision" ${report.status === 'revision' ? 'selected' : ''}>ส่งกลับให้แก้ไข</option>
-                  <option value="approved" ${report.status === 'approved' ? 'selected' : ''}>อนุมัติรายงาน</option>
-                </select>
-                <input class="input" data-review-feedback="${report.id}" maxlength="1000" value="${esc(report.feedback || '')}" placeholder="ข้อเสนอแนะถึงนักเรียน (ถ้ามี)">
-                <button class="btn btn-primary btn-small" data-save-review="${report.id}">บันทึกผล</button>
+                <div class="review-status-col">
+                  <label style="font-size:.73rem;margin-bottom:4px;color:var(--muted);display:block;">สถานะรายงาน</label>
+                  <select data-review-status="${report.id}" class="input" style="padding:8px 10px;font-weight:700;">
+                    <option value="pending" ${report.status === 'pending' ? 'selected' : ''}>⏳ รอตรวจ</option>
+                    <option value="approved" ${report.status === 'approved' ? 'selected' : ''}>✓ อนุมัติรายงาน</option>
+                    <option value="revision" ${report.status === 'revision' ? 'selected' : ''}>⚠️ ส่งกลับให้แก้ไข</option>
+                  </select>
+                </div>
+                <div class="review-feedback-col">
+                  <label style="font-size:.73rem;margin-bottom:4px;color:var(--muted);display:block;">ข้อเสนอแนะถึงนักเรียน</label>
+                  <input class="input" data-review-feedback="${report.id}" maxlength="1000" value="${esc(report.feedback || '')}" placeholder="ระบุคำแนะนำ หรือเหตุผลหากส่งกลับแก้ไข...">
+                  <div class="quick-feedbacks" style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;">
+                    <button type="button" class="btn btn-outline btn-small" data-quick-feedback="ผ่านเกณฑ์การฝึกงานเรียบร้อย บันทึกได้ดีมากครับ" data-target="${report.id}" data-set-status="approved" style="font-size:.7rem;padding:3px 8px;">👍 ผ่านเกณฑ์ดีมาก</button>
+                    <button type="button" class="btn btn-outline btn-small" data-quick-feedback="กรุณาเพิ่มเติมรายละเอียดของงานและสิ่งที่ได้เรียนรู้ให้ชัดเจนขึ้น" data-target="${report.id}" data-set-status="revision" style="font-size:.7rem;padding:3px 8px;">✏️ ขอรายละเอียดเพิ่ม</button>
+                    <button type="button" class="btn btn-outline btn-small" data-quick-feedback="กรุณาตรวจสอบลิงก์ผลงานและเปิดสิทธิ์การเข้าถึง (Anyone with link)" data-target="${report.id}" data-set-status="revision" style="font-size:.7rem;padding:3px 8px;">🔗 เช็กสิทธิ์ลิงก์</button>
+                  </div>
+                </div>
+                <div style="align-self:center;margin-top:16px;">
+                  <button class="btn btn-primary btn-small" data-save-review="${report.id}" style="padding:9px 16px;white-space:nowrap;">💾 บันทึกผลตรวจ</button>
+                </div>
               </div>
             </div>
           </article>
@@ -659,6 +777,7 @@ function renderLogs(logs, admin = false) {
               <div class="entry-meta">
                 ${admin ? `<strong>${esc(user?.name || 'ไม่พบบัญชี')}</strong><span>•</span>` : ''}
                 <strong>${formatDate(log.date)}</strong>
+                <span class="hour-badge">⏱️ ${esc(log.hours || 8)} ชม.</span>
                 <span>•</span>
                 <span>${esc(log.location)}</span>
               </div>
@@ -717,6 +836,10 @@ function bindView() {
       if (!name) return toast('กรุณากรอกชื่อที่แสดง');
       user.name = name;
       user.department = $('#profile-department').value;
+      if ($('#profile-workplace')) {
+        user.workplace = $('#profile-workplace').value.trim();
+        user.workplaceMap = safeUrl($('#profile-workplace-map')?.value);
+      }
       user.avatar = selectedAvatar;
       save(KEYS.users, users);
       showApp();
@@ -795,15 +918,28 @@ function bindView() {
     });
   }
 
+  document.querySelectorAll('[data-hours]').forEach(button => {
+    button.addEventListener('click', () => {
+      $('#log-hours').value = button.dataset.hours;
+      document.querySelectorAll('[data-hours]').forEach(item => item.classList.toggle('active', item === button));
+    });
+  });
+
   const daily = $('#daily-form');
   if (daily) {
     daily.addEventListener('submit', event => {
       event.preventDefault();
       const image = $('#image-preview-wrap').dataset.image || '';
+      const hours = Number($('#log-hours').value);
+      if (!Number.isFinite(hours) || hours < 0.5 || hours > 24) {
+        $('#log-hours').focus();
+        return toast('กรุณากรอกชั่วโมงระหว่าง 0.5 ถึง 24');
+      }
       const entry = {
         id: uid(),
         userId: currentUser().id,
         date: $('#log-date').value,
+        hours,
         location: $('#log-location').value.trim(),
         detail: $('#log-detail').value.trim(),
         image,
@@ -863,18 +999,38 @@ function bindView() {
     });
   });
 
-  document.querySelectorAll('[data-save-review]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.saveReview;
-      const reports = read(KEYS.reports);
-      const report = reports.find(r => r.id === id);
-      report.status = $(`[data-review-status="${id}"]`).value;
-      report.feedback = $(`[data-review-feedback="${id}"]`).value.trim();
-      save(KEYS.reports, reports);
-      toast('บันทึกผลการตรวจรายงานแล้ว');
-      $('#review-list').innerHTML = renderReviewReports();
+  const reviewList = $('#review-list');
+  if (reviewList) {
+    reviewList.addEventListener('click', event => {
+      const quickBtn = event.target.closest('[data-quick-feedback]');
+      if (quickBtn) {
+        const id = quickBtn.dataset.target;
+        const text = quickBtn.dataset.quickFeedback;
+        const status = quickBtn.dataset.setStatus;
+        const input = $(`[data-review-feedback="${id}"]`);
+        const select = $(`[data-review-status="${id}"]`);
+        if (input) input.value = text;
+        if (select && status) select.value = status;
+        toast('เลือกข้อเสนอแนะตัวอย่างแล้ว');
+        return;
+      }
+
+      const saveBtn = event.target.closest('[data-save-review]');
+      if (saveBtn) {
+        const id = saveBtn.dataset.saveReview;
+        const reports = read(KEYS.reports);
+        const report = reports.find(r => r.id === id);
+        if (!report) return toast('ไม่พบรายงานนี้ในระบบ');
+        const statusSelect = $(`[data-review-status="${id}"]`);
+        const feedbackInput = $(`[data-review-feedback="${id}"]`);
+        if (statusSelect) report.status = statusSelect.value;
+        if (feedbackInput) report.feedback = feedbackInput.value.trim();
+        save(KEYS.reports, reports);
+        toast(`บันทึกผลการตรวจสัปดาห์ที่ ${report.week} สำเร็จแล้ว`);
+        reviewList.innerHTML = renderReviewReports();
+      }
     });
-  });
+  }
 
   document.querySelectorAll('[data-delete-log]').forEach(btn => {
     btn.addEventListener('click', () => removeItem(KEYS.logs, btn.dataset.deleteLog, 'บันทึกงาน'));
@@ -990,20 +1146,71 @@ function seedDefaultAccounts() {
       password: 'Student@InternFlow2026',
       role: 'student',
       department: 'เทคโนโลยีธุรกิจดิจิทัล',
+      workplace: 'บริษัท ดิจิทัล อินโนเวชั่น ซอฟต์แวร์ จำกัด',
+      workplaceMap: 'https://maps.google.com/?q=Bangkok',
       createdAt: new Date().toISOString()
     }
   ];
 
   let hasChanged = false;
   demoAccounts.forEach(account => {
-    if (!users.some(u => u.email === account.email)) {
+    const existing = users.find(u => u.email === account.email);
+    if (!existing) {
       users.push(account);
+      hasChanged = true;
+    } else if (account.role === 'student' && !existing.workplace) {
+      existing.workplace = account.workplace;
+      existing.workplaceMap = account.workplaceMap;
       hasChanged = true;
     }
   });
 
   if (hasChanged) {
     save(KEYS.users, users);
+  }
+
+  const reports = read(KEYS.reports);
+  if (reports.length === 0) {
+    const defaultReports = [
+      {
+        id: 'sample-report-w1',
+        userId: 'internflow-default-student',
+        week: '1',
+        summary: 'สัปดาห์แรกได้เข้าร่วมปฐมนิเทศที่สถานประกอบการ ศึกษาโครงสร้างองค์กร และเริ่มเรียนรู้ระบบงานส่วนหน้า (Frontend UI) ร่วมกับพี่เลี้ยงและทีมพัฒนา',
+        link: 'https://github.com/example/internship-project',
+        status: 'pending',
+        feedback: '',
+        submittedAt: new Date(Date.now() - 86400000 * 4).toISOString()
+      },
+      {
+        id: 'sample-report-w2',
+        userId: 'internflow-default-student',
+        week: '2',
+        summary: 'ออกแบบและเขียนโค้ดระบบบันทึกเวลาฝึกงานรายชั่วโมง และระบบปักหมุดแผนที่ Google Maps สำหรับติดตามการฝึกงาน รองรับทั้ง Desktop, iPad และ Mobile',
+        link: 'https://drive.google.com/drive/folders/sample',
+        status: 'pending',
+        feedback: '',
+        submittedAt: new Date(Date.now() - 86400000 * 1).toISOString()
+      }
+    ];
+    save(KEYS.reports, defaultReports);
+  }
+
+  const logs = read(KEYS.logs);
+  if (logs.length === 0) {
+    const defaultLogs = [
+      {
+        id: 'sample-log-1',
+        userId: 'internflow-default-student',
+        date: today(),
+        hours: 8,
+        location: 'บริษัท ดิจิทัล อินโนเวชั่น ซอฟต์แวร์ จำกัด',
+        detail: 'พัฒนาและปรับปรุง UI หน้าเว็บแดชบอร์ดตามข้อเสนอแนะของพี่เลี้ยง พร้อมทดสอบความเข้ากันได้บนมือถือและ iPad',
+        image: '',
+        createdAt: new Date().toISOString()
+      }
+    ];
+    save(KEYS.logs, defaultLogs);
   }
 }
 
