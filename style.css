@@ -129,9 +129,9 @@ body.light .auth-theme-btn:hover { background:rgba(255,255,255,.82); border-colo
 @keyframes orb-float { to { transform:translate(50px,35px) scale(1.08); } }
 .auth-layout { position:relative; width:min(1160px,100%); min-height:680px; display:grid; grid-template-columns:1.1fr .9fr; overflow:hidden; border:1px solid rgba(133,181,227,.16); border-radius:28px; background:rgba(6,13,25,.58); box-shadow:0 36px 120px rgba(0,0,0,.52),inset 0 1px rgba(255,255,255,.04); backdrop-filter:blur(20px); }
 .auth-showcase { display:flex; min-height:680px; padding:48px 52px 34px; flex-direction:column; background:linear-gradient(135deg,rgba(8,32,61,.84),rgba(8,17,40,.53) 66%,rgba(18,16,64,.72)); border-right:1px solid rgba(140,187,232,.13); }
-.std-drawer-backdrop { position:fixed; inset:0; z-index:80; background:rgba(2,6,23,.68); backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:opacity .2s ease; }
+.std-drawer-backdrop { position:fixed; inset:0; z-index:80; background:rgba(2,6,23,.68); opacity:0; pointer-events:none; transition:opacity .2s ease; }
 .std-drawer-backdrop.show { opacity:1; pointer-events:auto; }
-body.light .std-drawer-backdrop { background:rgba(16,32,57,.38); backdrop-filter:blur(5px); }
+body.light .std-drawer-backdrop { background:rgba(16,32,57,.38); }
 .std-drawer-trigger { position:fixed; z-index:50; left:0; top:50%; transform:translateY(-50%); display:flex; align-items:center; gap:8px; padding:10px 14px 10px 10px; border:1px solid rgba(56,189,248,.45); border-left:0; border-radius:0 14px 14px 0; background:rgba(6,18,38,.85); color:#70dfff; backdrop-filter:blur(12px); box-shadow:4px 6px 22px rgba(0,0,0,.4); font:700 .82rem 'Plus Jakarta Sans','Noto Sans Thai',sans-serif; cursor:pointer; outline:none; transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease; }
 .std-drawer-trigger:hover,.std-drawer-trigger:focus-visible { transform:translateY(-50%) translateX(4px); background:rgba(12,32,64,.95); border-color:#38bdf8; color:#fff; box-shadow:6px 8px 25px rgba(56,189,248,.32); }
 .drawer-trigger-mark { display:grid; place-items:center; width:22px; height:22px; border-radius:6px; background:linear-gradient(135deg,#7af2ff,#38bdf8); color:#042032; font-size:11px; font-weight:800; }
@@ -320,3 +320,20 @@ body.light .progress-fill { background:linear-gradient(90deg,#0284c7,#6366f1); }
 @media (max-width:800px) { .app-layout { grid-template-columns:1fr; }.sidebar { position:static; display:flex; overflow-x:auto; gap:3px; padding:7px; }.nav-btn { width:auto; white-space:nowrap; }.nav-icon { display:none; }.stats { grid-template-columns:1fr; }.page-intro { align-items:flex-start; flex-direction:column; }.review-controls { flex-direction:column; }.header-inner { padding:0 15px; }.app-shell { padding:22px 15px 42px; } }
 @media (max-width:520px) { .auth-shell { padding:15px; }.auth-layout { border-radius:21px; }.auth-showcase { width:min(90vw,360px); padding:28px 25px 24px; border-radius:0 21px 21px 0; }.auth-card-wrap { min-height:640px; padding:25px 22px; }.auth-card-top { margin-bottom:32px; }.auth-heading { font-size:1.6rem; }.auth-card .input { font-size:.88rem; }.auth-card { padding:26px 20px; }.two-col { grid-template-columns:1fr; }.user-name { display:none; }.entry { flex-wrap:wrap; }.entry-actions { margin-left:auto; }.form-actions { justify-content:stretch; }.form-actions .btn { flex:1; }.settings-grid { grid-template-columns:1fr; }.avatar-edit-section { flex-direction:column; text-align:center; }.avatar-edit-actions { align-items:center; }.solar-system { right:-165px; transform:translateY(-50%) scale(.56); opacity:.68; }.floating-planet { display:block; top:18px; left:18px; transform:scale(.78); }.floating-planet.pulse { animation:planet-pulse-mobile .6s cubic-bezier(.2,.9,.25,1.4); }@keyframes planet-pulse-mobile { 50% { transform:scale(.95) translateY(-4px); } }@keyframes system-boost { 50% { transform:translateY(-50%) scale(.68) rotate(-3deg); } }.solar-hint,.f-hint { display:none !important; }.shooting-star { width:125px; height:2px; }.shooting-star::after { width:5px; height:5px; }.shooting-star-one { top:9%; left:8%; }.shooting-star-two { top:45%; left:15%; }.shooting-star-three { top:22%; left:30%; }.shooting-star-four { top:72%; left:12%; width:130px; }.shooting-star-five { top:35%; left:5%; width:110px; }.shooting-star-six { top:52%; left:65%; width:100px; }@keyframes shooting-star { 0%,72% { opacity:0; transform:translate(0,0) rotate(38deg); } 75% { opacity:1; } 92% { opacity:0; transform:translate(220px,165px) rotate(38deg); } 100% { opacity:0; transform:translate(220px,165px) rotate(38deg); } }.comet-tail { width:160px; height:5px; }.comet-head { width:7px; height:7px; }@keyframes comet-pass { 0%,72% { opacity:0; transform:translate(0,0) rotate(36deg); } 75% { opacity:1; } 92% { opacity:0; transform:translate(240px,175px) rotate(36deg); } 100% { opacity:0; transform:translate(240px,175px) rotate(36deg); } }.rainbow { --rainbow-size:440px; right:-120px; bottom:-120px; opacity:.7; }.cloud-giant { width:205px; height:67px; }.cloud-giant b { bottom:13px; }.cloud-giant b:nth-child(1){left:24px;width:75px;height:75px}.cloud-giant b:nth-child(2){left:75px;bottom:21px;width:100px;height:100px}.cloud-giant b:nth-child(3){right:23px;width:68px;height:68px}.cloud-giant b:nth-child(4){right:58px;bottom:32px;width:65px;height:65px}.cloud-giant-left { top:28%; left:-96px; opacity:.86; }.cloud-five,.cloud-seven { display:none; } } @media (max-width:375px) { .cloud-giant { transform:scale(.84); transform-origin:left center; left:-105px; }.solar-system { right:-180px; transform:translateY(-50%) scale(.5); } }
 @media (max-width:375px) { .rainbow { --rainbow-size:380px; right:-110px; bottom:-150px; } }
+
+/* On mobile, this panel must escape the glass container so the drawer stays above its backdrop. */
+@media (max-width:900px) {
+  .auth-layout {
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+  }
+
+  .auth-shell.drawer-open .auth-showcase {
+    z-index:100;
+    background:linear-gradient(135deg,#08203d 0%,#08182f 66%,#171447 100%);
+  }
+
+  body.light .auth-shell.drawer-open .auth-showcase {
+    background:linear-gradient(135deg,#dcefff 0%,#eef8ff 66%,#f1edff 100%);
+  }
+}
